@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer extends SubsystemBase{
   
   private final SwerveSubsystem swerveSubs = new SwerveSubsystem();
+  private final Vision vision = new Vision(swerveSubs::addVisionMeasurement);
   //Joystick setting
   public final static Joystick D_CONTROLLER = new Joystick(ControllerConstants.kDriverControllerPort);
   //DRIVE BUTTONS     
@@ -44,7 +45,7 @@ public class RobotContainer extends SubsystemBase{
 
   @Override
   public void periodic() {
-    
+    vision.periodic();
   }
 
 }
