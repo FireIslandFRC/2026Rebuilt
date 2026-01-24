@@ -10,6 +10,7 @@ public final class Configs {
         public static final class SwerveModuleConfig {
                 public static final SparkFlexConfig drivingConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig turningConfig = new SparkFlexConfig();
+                public static final SparkMaxConfig pitchConfig = new SparkMaxConfig();
 
                 static {
 
@@ -25,6 +26,13 @@ public final class Configs {
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(20)
                                         .inverted(false); //NOTE: DONT FORGET
+
+                        pitchConfig
+                                        .idleMode(IdleMode.kBrake)
+                                        .smartCurrentLimit(30);
+                        pitchConfig.closedLoop
+                                        .pid(0.1, 0, 0);
+                                        
                 }
         }
 
