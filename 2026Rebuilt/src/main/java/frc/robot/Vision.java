@@ -57,7 +57,7 @@ public class Vision {
      */
     public Vision(EstimateConsumer estConsumer) {
         this.estConsumer = estConsumer;
-        camera = new PhotonCamera(kCameraName);
+        camera = new PhotonCamera("Arducam_OV9281_USB_Camera"); //NOTE: hard coded
         photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
     }
 
@@ -141,6 +141,7 @@ public class Vision {
 
     public double targetDistance(){
         var results = camera.getAllUnreadResults();
+        // System.out.println(results);
         if (!results.isEmpty()) {
             // Camera processed a new frame since last
             // Get the last one in the list.
@@ -152,9 +153,9 @@ public class Vision {
                         // Found Tag 9, record its information
                         double targetRange =
                                 PhotonUtils.calculateDistanceToTargetMeters(
-                                        Units.inchesToMeters(24.5), // Measured with a tape measure, or in CAD.
-                                        Units.inchesToMeters(44.5), // From 2024 game manual for ID 7
-                                        Units.degreesToRadians(-30.0), // Measured with a protractor, or in CAD.
+                                        Units.inchesToMeters(15.75), // Measured with a tape measure, or in CAD.
+                                        Units.inchesToMeters(44.25), // From 2024 game manual for ID 7
+                                        Units.degreesToRadians(16), // Measured with a protractor, or in CAD.
                                         Units.degreesToRadians(target.getPitch()));
                         return targetRange;
                     }

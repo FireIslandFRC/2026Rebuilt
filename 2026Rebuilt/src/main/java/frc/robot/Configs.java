@@ -28,10 +28,11 @@ public final class Configs {
                                         .inverted(false); //NOTE: DONT FORGET
 
                         pitchConfig
-                                        .idleMode(IdleMode.kBrake)
-                                        .smartCurrentLimit(30);
+                                        .idleMode(IdleMode.kCoast)
+                                        .smartCurrentLimit(40)
+                                        .inverted(false);
                         pitchConfig.closedLoop
-                                        .pid(0.1, 0, 0);
+                                        .pid(0.6, 0, 0);
                                         
                 }
         }

@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.security.PublicKey;
+
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -21,16 +23,30 @@ public class ShooterPitch extends SubsystemBase{
     private SparkClosedLoopController pitchPosition;
 
     public ShooterPitch(){
-        pitchMotor = new SparkMax(1, MotorType.kBrushless);
-        pitchMotor.configure(Configs.SwerveModuleConfig.drivingConfig, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        pitchMotor = new SparkMax(49, MotorType.kBrushless);
+        pitchMotor.configure(Configs.SwerveModuleConfig.pitchConfig, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
         pitchPosition = pitchMotor.getClosedLoopController();
-
     }
 
-    public void setAngle(double pitchAngle){
-        // pitchPosition.setSetpoint(pitchAngle, ControlType.kPosition);
-        System.out.println(pitchAngle);
+    public void setAngle(double distance){
+        //pitchPosition.setSetpoint(distance, ControlType.kPosition);
+        System.out.println(distance);
     }
+
+    public void angleUp(){
+        pitchMotor.set(1);
+    }
+
+    public void angleDown(){
+        pitchMotor.set(-1);
+        System.out.println("down");
+    }
+
+    public void angleStop(){
+        pitchMotor.set(0);
+    }
+    public double getAngle(){
+return pitchMotor.getEncoder().getPosition();    }
 
 
 }

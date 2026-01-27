@@ -20,15 +20,15 @@ public class RobotContainer extends SubsystemBase{
   //Joystick setting
   public final static Joystick D_CONTROLLER = new Joystick(ControllerConstants.kDriverControllerPort);
   //DRIVE BUTTONS     
-  private final JoystickButton speedSlow = new JoystickButton(D_CONTROLLER, 1);
-  private final JoystickButton speedEmergency = new JoystickButton(D_CONTROLLER, 3);
-  private final JoystickButton fieldOriented = new JoystickButton(D_CONTROLLER, 9);
+  //private final JoystickButton speedSlow = new JoystickButton(D_CONTROLLER, 1);
+  private final JoystickButton up = new JoystickButton(D_CONTROLLER, 9);
+  private final JoystickButton down = new JoystickButton(D_CONTROLLER, 10);
   private final JoystickButton resetPigeonButton = new JoystickButton(D_CONTROLLER, 16);
-  private final JoystickButton lockbutton = new JoystickButton(D_CONTROLLER, 10); //Implement
-  private final JoystickButton pitchAngle = new JoystickButton(D_CONTROLLER, 11); //Implement
+  //private final JoystickButton lockbutton = new JoystickButton(D_CONTROLLER, 10); //Implement
+  private final JoystickButton pitchAngle = new JoystickButton(D_CONTROLLER, 1); //Implement
 
   public RobotContainer() {
-    swerveSubs.setDefaultCommand(
+    /*swerveSubs.setDefaultCommand(
       new S_DriveCommand(
         swerveSubs,
         () -> -D_CONTROLLER.getY(), 
@@ -38,19 +38,28 @@ public class RobotContainer extends SubsystemBase{
         () -> speedSlow.getAsBoolean(),
         () -> speedEmergency.getAsBoolean() 
       )
-    );
+    );*/
     configureBindings();
   }
 
   private void configureBindings() {
     resetPigeonButton.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));  
-    lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
+    //lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
     pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance())));
+
+    up.whileTrue(new InstantCommand(() -> shooterPitch.angleUp()));
+    down.whileTrue(new InstantCommand(() -> shooterPitch.angleDown()));
+    
   }
 
   @Override
   public void periodic() {
-    vision.periodic();
+    //vision.periodic(); //NOTE
+    if (!up.getAsBoolean() && !down.getAsBoolean() && !pitchAngle.getAsBoolean()){
+      shooterPitch.angleStop();
+    }
+    System.out.println(shooterPitch.getAngle());
   }
+
 
 }
