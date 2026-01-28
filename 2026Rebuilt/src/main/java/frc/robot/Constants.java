@@ -56,9 +56,9 @@ public class Constants {
     public static final int PIGEON_ID = 30;
 
     /* * * MEASUREMENTS * * */
-    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
-    public static final double TRACK_WIDTH = Units.inchesToMeters(25);
-    public static final double WHEEL_BASE = Units.inchesToMeters(25); //FIXME update
+    public static final double WHEEL_DIAMETER = Units.inchesToMeters(3.8);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(27);
+    public static final double WHEEL_BASE = Units.inchesToMeters(27); //FIXME update
     
     public static final double DRIVE_GEAR_RATIO = 5.27 / 1;
     public static final double ROTATION_GEAR_RATIO = 26 / 1;
