@@ -70,6 +70,7 @@ public class Vision {
             }
             updateEstimationStdDevs(visionEst, result.getTargets());
 
+            
             visionEst.ifPresent(
                     est -> {
                         // Change our trust in the measurement based on the tags we can see

@@ -16,7 +16,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Configs;
 import frc.robot.Vision;
-
+ 
 public class ShooterPitch extends SubsystemBase{
 
     private SparkMax pitchMotor;

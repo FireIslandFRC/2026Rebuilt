@@ -61,31 +61,31 @@ public class SwerveSubsystem extends SubsystemBase {
   /* * * RESET METHODS * * */
 
   public void resetPigeon() {
-  //  if (DriverStation.getAlliance().isPresent()
-  //     && DriverStation.getAlliance().get() == Alliance.Red) {
-  //     pigeon.setYaw(180);
-  //   } else {
-  //     pigeon.setYaw(0);
-  //   }
+  if (DriverStation.getAlliance().isPresent()
+       && DriverStation.getAlliance().get() == Alliance.Red) {
+       pigeon.setYaw(180);
+     } else {
+       pigeon.setYaw(0);
+     }
 
-    pigeon.setYaw(0);
+    //pigeon.setYaw(0);
   }
   
   public void resetOdometry() {
-    m_poseEstimator.resetPosition(getRotation2d(), getModulePositions(), new Pose2d());
+    m_poseEstimator.resetPosition(getRotation2d(), getModulePositions(), new Pose2d(10,10, new Rotation2d(0)));
   }
 
   public void resetOdometry(Pose2d pose) {
-    // int flipped;
-    // if (DriverStation.getAlliance().isPresent()
-    //   && DriverStation.getAlliance().get() == Alliance.Red) {
-    //   flipped = 180;
-    // } else {
-    //   flipped = 0;
-    // } 
-    //m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees() + flipped), getModulePositions(), pose);
+    int flipped;
+    if (DriverStation.getAlliance().isPresent()
+      && DriverStation.getAlliance().get() == Alliance.Red) {
+      flipped = 180;
+    } else {
+      flipped = 0;
+    } 
+    m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees() + flipped), getModulePositions(), pose);
 
-    m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees()), getModulePositions(), pose);
+    // m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees()), getModulePositions(), pose);
   }
 
   /* * * GET METHODS * * */

@@ -4,7 +4,8 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.ShooterPitch;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.S_DriveCommand;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +31,9 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton fieldOriented = new JoystickButton(D_CONTROLLER, 11);
   private final JoystickButton speedEmergency = new JoystickButton(D_CONTROLLER, 12);
   public RobotContainer() {
+
+        swerveSubs.resetOdometry(new Pose2d(8.33,4.23, new Rotation2d(0)));
+
     swerveSubs.setDefaultCommand(
       new S_DriveCommand(
         swerveSubs,
@@ -61,7 +65,7 @@ public class RobotContainer extends SubsystemBase{
     if (!up.getAsBoolean() && !down.getAsBoolean() && !pitchAngle.getAsBoolean()){
       shooterPitch.angleStop();
     }
-    System.out.println(shooterPitch.getAngle());
+    //System.out.println(shooterPitch.getAngle());
   }
 
 
