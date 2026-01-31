@@ -104,6 +104,7 @@ public class Vision {
             for (var tgt : targets) {
                 var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
+                else if (tgt.getPoseAmbiguity() > 0.2) continue;
                 numTags++;
                 avgDist +=
                         tagPose
@@ -120,11 +121,15 @@ public class Vision {
                 // One or more tags visible, run the full heuristic.
                 avgDist /= numTags;
                 // Decrease std devs if multiple targets are visible
-                if (numTags > 1) estStdDevs = kMultiTagStdDevs;
+                if (numTags > 1){
+                    estStdDevs = kMultiTagStdDevs;
+                }
                 // Increase std devs based on (average) distance
-                if (numTags == 1 && avgDist > 4)
+                if (numTags == 1 && avgDist > 4){
                     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                }else{
+                    estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                }
                 curStdDevs = estStdDevs;
             }
         }

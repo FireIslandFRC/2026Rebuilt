@@ -60,7 +60,7 @@ public class RobotContainer extends SubsystemBase{
 
   @Override
   public void periodic() {
-    //vision.periodic();
+    vision.periodic();
 
     if (!up.getAsBoolean() && !down.getAsBoolean() && !pitchAngle.getAsBoolean()){
       shooterPitch.angleStop();
