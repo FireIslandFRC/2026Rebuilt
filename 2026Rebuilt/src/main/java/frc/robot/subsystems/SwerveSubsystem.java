@@ -1,6 +1,14 @@
 package frc.robot.subsystems;
 
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
+
+import static frc.robot.Constants.Vision.*;
+
+import java.util.Optional;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -38,8 +46,14 @@ public class SwerveSubsystem extends SubsystemBase {
   //instantiate poseEstimator
   private SwerveDrivePoseEstimator m_poseEstimator;
 
+  private final PhotonCamera camera;
+  private final PhotonPoseEstimator photonEstimator;
+
   // swervesubsystem constructor
   public SwerveSubsystem() {
+
+    camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
+    photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
     
     pigeon.reset();
 
@@ -198,8 +212,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public void addVisionMeasurement(
             Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
         m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
+                m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
     }
-
 
   /* * * WHEEL METHODS * * */
   public void lock() {
@@ -239,18 +253,25 @@ public class SwerveSubsystem extends SubsystemBase {
 
   }
 
-  //public void updateVisionOdometry() {
-    
-  //}
-
-//   public void updateOdometry() {
-
-// }
+  public void updateVisionOdometry() {
+    for (var result : camera.getAllUnreadResults()) {
+      Optional<EstimatedRobotPose> visionEst = Optional.empty();
+      visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
+      if (visionEst.isEmpty()) {
+        visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
+      }
+      visionEst.ifPresent(
+          est -> {
+              // Change our trust in the measurement based on the tags we can see
+              m_poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds);
+          });
+  }
+  }
 
   @Override
   public void periodic() {    
     // This method will be called once per scheduler run
-    // updateVisionOdometry();
+    //updateVisionOdometry();
 
     m_poseEstimator.update(
         pigeon.getRotation2d(),

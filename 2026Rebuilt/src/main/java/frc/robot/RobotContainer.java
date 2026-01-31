@@ -32,7 +32,7 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton speedEmergency = new JoystickButton(D_CONTROLLER, 12);
   public RobotContainer() {
 
-        swerveSubs.resetOdometry(new Pose2d(8.33,4.23, new Rotation2d(0)));
+    swerveSubs.resetOdometry(new Pose2d(8.33,4.23, new Rotation2d(0)));
 
     swerveSubs.setDefaultCommand(
       new S_DriveCommand(
@@ -51,7 +51,7 @@ public class RobotContainer extends SubsystemBase{
   private void configureBindings() {
     resetPigeonButton.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));  
     //lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
-    pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance())));
+    //pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance()))); //NOTE: reimplement old vision to work
 
     up.whileTrue(new InstantCommand(() -> shooterPitch.angleUp()));
     down.whileTrue(new InstantCommand(() -> shooterPitch.angleDown()));
