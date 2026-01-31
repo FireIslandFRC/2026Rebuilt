@@ -26,15 +26,26 @@ package frc.robot;
 
 import static frc.robot.Constants.Vision.*;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
+
+import javax.lang.model.util.Elements.Origin;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -48,19 +59,27 @@ public class Vision {
     private final PhotonPoseEstimator photonEstimator;
     private Matrix<N3, N1> curStdDevs;
     private final EstimateConsumer estConsumer;
+    private final Supplier<Pose2d> poseSupplier;
+    private Alliance allience;
 
     // Simulation
     private PhotonCameraSim cameraSim;
     private VisionSystemSim visionSim;
-
     /**
      * @param estConsumer Lamba that will accept a pose estimate and pass it to your desired {@link
      *     edu.wpi.first.math.estimator.SwerveDrivePoseEstimator}
      */
-    public Vision(EstimateConsumer estConsumer) {
+    public Vision(EstimateConsumer estConsumer, Supplier<Pose2d> poseSupplier) {
+        this.poseSupplier = poseSupplier;
         this.estConsumer = estConsumer;
         camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-        photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
+        photonEstimator = new PhotonPoseEstimator(kTagLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
+    
+        allience = DriverStation.getAlliance().orElse(Alliance.Blue);
+        kTagLayout.setOrigin(allience == Alliance.Red ? OriginPosition.kRedAllianceWallRightSide
+                                                        :OriginPosition.kBlueAllianceWallRightSide
+        );
+
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -86,6 +105,7 @@ public class Vision {
     }
 
     public void periodic() {
+        photonEstimator.setReferencePose(poseSupplier.get());
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         for (var result : camera.getAllUnreadResults()) {
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
@@ -109,7 +129,6 @@ public class Vision {
                     est -> {
                         // Change our trust in the measurement based on the tags we can see
                         var estStdDevs = getEstimationStdDevs();
-
                         estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                     });
         }

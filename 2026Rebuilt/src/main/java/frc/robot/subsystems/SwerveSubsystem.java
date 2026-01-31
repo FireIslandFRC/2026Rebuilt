@@ -75,14 +75,14 @@ public class SwerveSubsystem extends SubsystemBase {
   /* * * RESET METHODS * * */
 
   public void resetPigeon() {
-  if (DriverStation.getAlliance().isPresent()
+  /*if (DriverStation.getAlliance().isPresent()
        && DriverStation.getAlliance().get() == Alliance.Red) {
        pigeon.setYaw(180);
      } else {
        pigeon.setYaw(0);
-     }
+     }*/
 
-    //pigeon.setYaw(0);
+    pigeon.setYaw(0);
   }
   
   public void resetOdometry() {
@@ -90,16 +90,16 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    int flipped;
+    /*int flipped;
     if (DriverStation.getAlliance().isPresent()
       && DriverStation.getAlliance().get() == Alliance.Red) {
       flipped = 180;
     } else {
       flipped = 0;
-    } 
-    m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees() + flipped), getModulePositions(), pose);
+    } */
+    //m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees() + flipped), getModulePositions(), pose);
 
-    // m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees()), getModulePositions(), pose);
+    m_poseEstimator.resetPosition(new Rotation2d(getRotation2d().getDegrees()), getModulePositions(), pose);
   }
 
   /* * * GET METHODS * * */
@@ -211,8 +211,10 @@ public class SwerveSubsystem extends SubsystemBase {
     /** See {@link SwerveDrivePoseEstimator#addVisionMeasurement(Pose2d, double, Matrix)}. */
     public void addVisionMeasurement(
             Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
-        m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
-                m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+        // m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
+        //         m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+            m_field.setRobotPose(visionMeasurement);
+
     }
 
   /* * * WHEEL METHODS * * */
@@ -272,6 +274,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {    
     // This method will be called once per scheduler run
     //updateVisionOdometry();
+    System.out.println();
 
     m_poseEstimator.update(
         pigeon.getRotation2d(),
@@ -283,7 +286,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Pigeon", pigeon.getYaw().getValueAsDouble());
     
-    m_field.setRobotPose(getPose());
+   // m_field.setRobotPose(getPose());
     //SmartDashboard.putData(m_poseEstimator.getEstimatedPosition().);
   }
 }

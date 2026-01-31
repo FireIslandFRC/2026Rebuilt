@@ -18,7 +18,7 @@ public class RobotContainer extends SubsystemBase{
   
   private final SwerveSubsystem swerveSubs = new SwerveSubsystem();
   private final ShooterPitch shooterPitch = new ShooterPitch();
-  private final Vision vision = new Vision(swerveSubs::addVisionMeasurement);
+  private final Vision vision = new Vision(swerveSubs::addVisionMeasurement, swerveSubs::getPose);
   //Joystick setting
   public final static XboxController D_CONTROLLER = new XboxController(ControllerConstants.kDriverControllerPort);
   //DRIVE BUTTONS     

@@ -68,7 +68,7 @@ public class S_DriveCommand extends Command {
     zSpeed = deadzone(zSpeed); 
 
     if (DriverStation.getAlliance().get() == Alliance.Red) {
-      invert = -1;
+      invert = 1; //NOTE: yea
     } else {
       invert = 1;
     }
