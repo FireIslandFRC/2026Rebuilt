@@ -35,17 +35,16 @@ public class Constants {
   }
 
   public static class Vision {
-    public static final String kCameraName = "Camera1";
+    public static final String kCameraName = "Arducam_OV9281_USB_Camera";
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCam =
-            new Transform3d(new Translation3d(-.35, .05, .2), new Rotation3d(0, 15, 0)); //NOTE: Camera translation
+            new Transform3d(new Translation3d(Units.inchesToMeters(13), Units.inchesToMeters(2), Units.inchesToMeters(8)), new Rotation3d(0, Units.degreesToRadians(18), 0));
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
             AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(.5, .5,1);
-    // public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.5, 0.4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
