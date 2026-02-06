@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.security.PublicKey;
-
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -33,19 +31,21 @@ public class ShooterPitch extends SubsystemBase{
     }
 
     public void angleUp(){
-        pitchMotor.set(1);
+        System.out.println("up");
+        // pitchMotor.set(1);
     }
 
     public void angleDown(){
-        pitchMotor.set(-1);
+        // pitchMotor.set(-1);
         System.out.println("down");
     }
 
     public void angleStop(){
-        pitchMotor.set(0);
+        // pitchMotor.set(0);
     }
     public double getAngle(){
-return pitchMotor.getEncoder().getPosition();    }
+return pitchMotor.getEncoder().getPosition();    
+}
 
 
 }

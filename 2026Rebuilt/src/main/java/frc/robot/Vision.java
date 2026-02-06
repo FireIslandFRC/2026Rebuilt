@@ -69,7 +69,7 @@ import edu.wpi.first.math.numbers.N3;
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         for (var change : camera.getAllUnreadResults()) {
             visionEst = photonEstimator.update(change);
-            System.out.println(visionEst);
+            //System.out.println(visionEst);
             updateEstimationStdDevs(visionEst, change.getTargets());
             visionEst.ifPresent(
                      est -> {
