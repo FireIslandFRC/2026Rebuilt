@@ -54,9 +54,10 @@ public class RobotContainer extends SubsystemBase{
 
     // Follows deploy/choreo/myTrajectory.traj
 
-    swerveSubs.resetOdometry(new Pose2d(8.33,4.23, new Rotation2d(0)));
+    swerveSubs.resetOdometry(new Pose2d(8.25,4, new Rotation2d(0)));
 
     autoChooser.addCmd("MyTrajectory", this::myTrajectoryCommand);
+    autoChooser.addCmd("line", this::myLineCommand);
     autoChooser.addRoutine("Example Routine", this::exampleRoutine);
 
 
@@ -71,7 +72,7 @@ public class RobotContainer extends SubsystemBase{
         swerveSubs,
         () -> -D_CONTROLLER.getLeftY(), 
         () -> -D_CONTROLLER.getLeftX(), 
-        () -> -D_CONTROLLER.getRightX(), 
+        () -> -D_CONTROLLER.getRightX(),
         () -> fieldOriented.getAsBoolean(), 
         () -> speedSlow.getAsBoolean(),
         () -> speedEmergency.getAsBoolean() 
@@ -96,6 +97,10 @@ public class RobotContainer extends SubsystemBase{
 
   public Command myTrajectoryCommand() {
     return autoFactory.trajectoryCmd("myTrajectory");
+  }
+
+  public Command myLineCommand() {
+    return autoFactory.trajectoryCmd("line");
   }
 
   private AutoRoutine exampleRoutine() {

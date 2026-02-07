@@ -44,7 +44,7 @@ public class Constants {
             AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.5, 0.4, 8);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
@@ -56,7 +56,7 @@ public class Constants {
     public static final int PIGEON_ID = 30;
 
     /* * * MEASUREMENTS * * */
-    public static final double WHEEL_DIAMETER = Units.inchesToMeters(3.8);
+    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double TRACK_WIDTH = Units.inchesToMeters(27);
     public static final double WHEEL_BASE = Units.inchesToMeters(27); //FIXME update
     

@@ -34,9 +34,11 @@ import frc.robot.Constants.SwerveConstants;
 public class SwerveSubsystem extends SubsystemBase {
   /* * * INITIALIZATION * * */
 
-  private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
-  private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
-  private final PIDController headingController = new PIDController(3, 0.0, 0.0);
+  // private final PIDController xController = new PIDController(3, 0.0, 0.01);
+  // private final PIDController yController = new PIDController(3, 0.0, 0.01);
+  private final PIDController xController = new PIDController(2, 0.0, .03);
+  private final PIDController yController = new PIDController(2, 0.0, .03);
+  private final PIDController headingController = new PIDController(0, 0.0, 0.0);
 
   //initialize SwerveModules 
   private SwerveModule[] swerveModules; 
@@ -49,12 +51,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   //instantiate poseEstimator
   private SwerveDrivePoseEstimator m_poseEstimator;
-
-  private PhotonPoseEstimator photonEstimator =
-                new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
-
-  private PhotonCamera camera = new PhotonCamera(Constants.Vision.kCameraName);
-
 
   public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
@@ -129,7 +125,7 @@ public class SwerveSubsystem extends SubsystemBase {
     } else {
       pigeon.setYaw(0);
     }
-    //pigeon.setYaw(0);
+    // pigeon.setYaw(0);
   }
   
   // public void resetOdometry() {
