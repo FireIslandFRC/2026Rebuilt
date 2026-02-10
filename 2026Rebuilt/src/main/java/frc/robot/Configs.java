@@ -11,6 +11,8 @@ public final class Configs {
                 public static final SparkFlexConfig drivingConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig turningConfig = new SparkFlexConfig();
                 public static final SparkMaxConfig pitchConfig = new SparkMaxConfig();
+                public static final SparkFlexConfig intakeConfigL = new SparkFlexConfig();
+                public static final SparkFlexConfig intakeConfigR = new SparkFlexConfig();
 
                 static {
 
@@ -21,6 +23,17 @@ public final class Configs {
                         drivingConfig.encoder
                                         .positionConversionFactor(SwerveConstants.DRIVE_ENCODER_POSITION_CONVERSION) // meters   CHECKME make sure right conversion
                                         .velocityConversionFactor(SwerveConstants.DRIVE_ENCODER_VELOCITY_CONVERSION); // meters per second
+
+                        intakeConfigL 
+                                        .idleMode(IdleMode.kBrake)
+                                        .smartCurrentLimit(40)
+                                        .inverted(true);
+
+                        intakeConfigR 
+                                        .idleMode(IdleMode.kBrake)
+                                        .smartCurrentLimit(40)
+                                        .inverted(false)
+                                        .follow(41);
 
                         turningConfig
                                         .idleMode(IdleMode.kBrake)

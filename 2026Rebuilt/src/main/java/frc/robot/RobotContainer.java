@@ -1,9 +1,10 @@
 package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.subsystems.ShooterPitch;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.S_DriveCommand;
+import frc.robot.commands.intakeUp;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -18,46 +19,23 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.subsystems.ShooterPitch;
+import frc.robot.subsystems.Intake;
 import frc.robot.Vision;
 
 public class RobotContainer extends SubsystemBase{
-    private final AutoFactory autoFactory;
-    private final AutoChooser autoChooser;
   
   private final SwerveSubsystem swerveSubs = new SwerveSubsystem();
-  private final ShooterPitch shooterPitch = new ShooterPitch();
-  private final Vision vision = new Vision(swerveSubs::addVisionMeasurement);
+  private final Intake intakeSubs = new Intake();
   //Joystick setting
   public final static XboxController D_CONTROLLER = new XboxController(ControllerConstants.kDriverControllerPort);
   //DRIVE BUTTONS     
-  private final JoystickButton speedSlow = new JoystickButton(D_CONTROLLER, 1);
-  private final JoystickButton up = new JoystickButton(D_CONTROLLER, 9);
-  private final JoystickButton down = new JoystickButton(D_CONTROLLER, 10);
-  private final JoystickButton resetPigeonButton = new JoystickButton(D_CONTROLLER, 2);
-  //private final JoystickButton lockbutton = new JoystickButton(D_CONTROLLER, 10); //Implement
-  private final JoystickButton pitchAngle = new JoystickButton(D_CONTROLLER, 1); //Implement
-  private final JoystickButton fieldOriented = new JoystickButton(D_CONTROLLER, 11);
-  private final JoystickButton speedEmergency = new JoystickButton(D_CONTROLLER, 12);
+  private final JoystickButton speedSlow = new JoystickButton(D_CONTROLLER, 11);
+  private final JoystickButton speedEmergency = new JoystickButton(D_CONTROLLER, 10);
+  private final JoystickButton fieldOriented = new JoystickButton(D_CONTROLLER, 12);
+  private final JoystickButton up = new JoystickButton(D_CONTROLLER, 1);
+  private final JoystickButton down = new JoystickButton(D_CONTROLLER, 2);
 
   public RobotContainer() {
-
-    autoChooser = new AutoChooser();
-
-    autoFactory = new AutoFactory(
-            swerveSubs::getPose, // A function that returns the current robot pose
-            swerveSubs::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
-            swerveSubs::followTrajectory, // The drive subsystem trajectory follower 
-            true, // If alliance flipping should be enabled 
-            swerveSubs // The drive subsystem
-        );
-
-    // Follows deploy/choreo/myTrajectory.traj
-
-    swerveSubs.resetOdometry(new Pose2d(8.33,4.23, new Rotation2d(0)));
-
-    autoChooser.addCmd("MyTrajectory", this::myTrajectoryCommand);
-    autoChooser.addRoutine("Example Routine", this::exampleRoutine);
 
 
     // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
@@ -66,54 +44,35 @@ public class RobotContainer extends SubsystemBase{
     //     : stream
     // );
 
-    swerveSubs.setDefaultCommand(
+    /*swerveSubs.setDefaultCommand(
       new S_DriveCommand(
         swerveSubs,
         () -> -D_CONTROLLER.getLeftY(), 
         () -> -D_CONTROLLER.getLeftX(), 
-        () -> -D_CONTROLLER.getRightX(), 
+        () -> -D_CONTROLLER.getRightX(),
         () -> fieldOriented.getAsBoolean(), 
         () -> speedSlow.getAsBoolean(),
         () -> speedEmergency.getAsBoolean() 
       )
-    );
+    );*/
     configureBindings();
-        SmartDashboard.putData("hi", autoChooser);
-        // SmartDashboard.putBoolean("HI", );
 
-    // Schedule the selected auto during the autonomous period
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
   }
 
   private void configureBindings() {
-    resetPigeonButton.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));  
     //lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
     //pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance()))); //NOTE: reimplement old vision to work
 
-    up.whileTrue(new InstantCommand(() -> shooterPitch.angleUp()));
-    down.whileTrue(new InstantCommand(() -> shooterPitch.angleDown()));
+    up.whileTrue(new intakeUp(intakeSubs));
+    down.whileTrue(new InstantCommand(() -> intakeSubs.IntakeDown()));
   }
-
-  public Command myTrajectoryCommand() {
-    return autoFactory.trajectoryCmd("myTrajectory");
-  }
-
-  private AutoRoutine exampleRoutine() {
-       AutoRoutine routine = autoFactory.newRoutine("taxi");
-
-           return routine;
-
-    }
 
   @Override
   public void periodic() {
-    vision.periodic();
-
-    if (!up.getAsBoolean() && !down.getAsBoolean() && !pitchAngle.getAsBoolean()){
-      shooterPitch.angleStop();
+  if (!up.getAsBoolean() && !down.getAsBoolean()){
+      //intakeSubs.stop();
     }
     // System.out.println(shooterPitch.getAngle());
-
   }
 
 }
