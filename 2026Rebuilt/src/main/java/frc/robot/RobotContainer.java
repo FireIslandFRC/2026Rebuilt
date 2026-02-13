@@ -18,6 +18,7 @@ public class RobotContainer extends SubsystemBase{
   
   private final SwerveSubsystem swerveSubs = new SwerveSubsystem();
   private final Shooter shooterPitch = new Shooter();
+  private final CustomMathUtil customMathUtil = new CustomMathUtil();
   private final Vision vision = new Vision(swerveSubs::addVisionMeasurement);
   //Joystick setting
   public final static XboxController D_CONTROLLER = new XboxController(ControllerConstants.kDriverControllerPort);
@@ -57,7 +58,8 @@ public class RobotContainer extends SubsystemBase{
     //lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
     //pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance())));
 
-    left.onTrue(new InstantCommand(() -> shooterPitch.angleLeft()));
+    // left.onTrue(new InstantCommand(() -> shooterPitch.angleLeft()));
+    left.onTrue(new InstantCommand(() -> customMathUtil.angleToTarget(new Pose2d(3, 4, new Rotation2d(0)))));
     right.onTrue(new InstantCommand(() -> shooterPitch.angleRight()));
     up.onTrue(new InstantCommand(() -> shooterPitch.angleUp()));
     down.onTrue(new InstantCommand(() -> shooterPitch.angleDown()));

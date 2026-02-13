@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.security.PublicKey;
@@ -13,6 +14,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 
 import frc.robot.Configs;
@@ -22,20 +25,25 @@ public class Shooter extends SubsystemBase{
 
     private Servo pitchMotor;
     private Servo turretMotor;
-    private SparkMax flywheelMotor;
+    private SparkFlex flywheelMotorRotate;
     private SparkMax intake1;
     private SparkMax intake2;
+    private PIDController shooterSpeedPID;
 
 
     public Shooter(){
         pitchMotor = new Servo(1);
         turretMotor = new Servo(2);
-        flywheelMotor = new SparkMax(4, MotorType.kBrushless);
+        flywheelMotorRotate = new SparkFlex(4, MotorType.kBrushless);
         intake1 = new SparkMax(2, MotorType.kBrushless);
         intake2 = new SparkMax(3, MotorType.kBrushless);
+        shooterSpeedPID  = new PIDController(1,0,0);
     }
 
+
+    /****                   angles                **********/
     public void setShootingAngle(double angle){
+
         pitchMotor.set(angle);
         System.out.println(angle);
     }
@@ -49,9 +57,9 @@ public class Shooter extends SubsystemBase{
         System.out.println("down");
     }
 
+    /********                    rotate                  *********/
     public void turretAngle(double angle){
-        turretMotor.set(angle);
-        System.out.println(angle);
+        turretMotor.set(angle * 3);
     }
 
     public void angleLeft(){
@@ -67,12 +75,13 @@ public class Shooter extends SubsystemBase{
        // pitchMotor.set(0);
     }
 
+    /***************                    flywheel                   ****************/
     public void setShootingSpeed(double speed){
-        flywheelMotor.set(speed);
+        flywheelMotorRotate.set(speed);
     }
 
     public void stopFlywheel(){
-        flywheelMotor.set(0);
+        flywheelMotorRotate.set(0);
     }
 
     public void setIntake(){
