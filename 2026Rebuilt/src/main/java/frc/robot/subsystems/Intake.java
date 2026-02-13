@@ -34,6 +34,8 @@ public class Intake extends SubsystemBase{
     public void IntakeUp(){
         System.out.println("up");
         intakeMotorLeft.set(-.5);
+        intakeMotorRight.set(-.5);
+        System.out.println(intakeMotorLeft.getEncoder().getPosition());
     }
 
     public void IntakeDown(){

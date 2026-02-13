@@ -264,7 +264,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
   }
 
-  @Override
+  /*@Override
   public void periodic() {    
     // This method will be called once per scheduler run
     updateVisionOdometry();
@@ -285,5 +285,5 @@ public class SwerveSubsystem extends SubsystemBase {
     
   //  m_field.setRobotPose(getPose());
     //SmartDashboard.putData(m_poseEstimator.getEstimatedPosition().);
-  }
+  } */
 }
