@@ -34,6 +34,11 @@ public final class Configs {
                                         .smartCurrentLimit(40)
                                         .inverted(false);
                                         //.follow(41);
+                        intakeConfigL.closedLoop
+                                        .pid(0.6, 0, 0);
+
+                        intakeConfigR.closedLoop
+                                        .pid(0.6, 0, 0);
 
                         turningConfig
                                         .idleMode(IdleMode.kBrake)

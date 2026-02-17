@@ -4,6 +4,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.S_DriveCommand;
+import frc.robot.commands.intakeDown;
 import frc.robot.commands.intakeUp;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -64,15 +65,11 @@ public class RobotContainer extends SubsystemBase{
     //pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance()))); //NOTE: reimplement old vision to work
 
     up.whileTrue(new intakeUp(intakeSubs));
-    down.whileTrue(new InstantCommand(() -> intakeSubs.IntakeDown()));
+    down.whileTrue(new intakeDown(intakeSubs));
   }
 
   @Override
   public void periodic() {
-  if (!up.getAsBoolean() && !down.getAsBoolean()){
-      //intakeSubs.stop();
-    }
-    // System.out.println(shooterPitch.getAngle());
   }
 
 }
