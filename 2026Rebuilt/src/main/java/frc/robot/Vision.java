@@ -24,19 +24,23 @@
 
  package frc.robot;
 
- import static frc.robot.Constants.Vision.kCameraName;
+ import static frc.robot.Constants.Vision.kCameraNameLeft;
+ import static frc.robot.Constants.Vision.kCameraNameRight;
 import static frc.robot.Constants.Vision.kMultiTagStdDevs;
-import static frc.robot.Constants.Vision.kRobotToCam;
+import static frc.robot.Constants.Vision.kRobotToCamLeft;
+import static frc.robot.Constants.Vision.kRobotToCamRight;
 import static frc.robot.Constants.Vision.kSingleTagStdDevs;
 import static frc.robot.Constants.Vision.kTagLayout;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.Matrix;
@@ -46,8 +50,10 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
  
  public class Vision {
-    private final PhotonCamera camera;
-    private final PhotonPoseEstimator photonEstimator;
+    private final PhotonCamera cameraLeft;
+    private final PhotonCamera cameraRight;
+    private final PhotonPoseEstimator photonEstimatorLeft;
+    private final PhotonPoseEstimator photonEstimatorRight;
     private Matrix<N3, N1> curStdDevs;
     private final EstimateConsumer estConsumer;
 
@@ -57,29 +63,48 @@ import edu.wpi.first.math.numbers.N3;
     */
     public Vision(EstimateConsumer estConsumer) {
         this.estConsumer = estConsumer;
-        camera = new PhotonCamera(kCameraName);
+        cameraLeft = new PhotonCamera(kCameraNameLeft);
+        cameraRight = new PhotonCamera(kCameraNameRight);
 
-        photonEstimator =
-                new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
-        photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        photonEstimatorLeft =
+                new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCamLeft);
+        photonEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
+
+        photonEstimatorRight =
+                new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCamRight);
+        photonEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     }
  
      public void periodic() {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var change : camera.getAllUnreadResults()) {
-            visionEst = photonEstimator.update(change);
+
+        for (var change : cameraLeft.getAllUnreadResults()) {
+            visionEst = photonEstimatorLeft.update(change);
             //System.out.println(visionEst);
             updateEstimationStdDevs(visionEst, change.getTargets());
             visionEst.ifPresent(
                      est -> {
                          // Change our trust in the measurement based on the tags we can see
                          var estStdDevs = getEstimationStdDevs();
-
- 
                          estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                      });
          }
+
+        
+        for (var change : cameraRight.getAllUnreadResults()) {
+            visionEst = photonEstimatorRight.update(change);
+            //System.out.println(visionEst);
+            updateEstimationStdDevs(visionEst, change.getTargets());
+            visionEst.ifPresent(
+                     est -> {
+                         // Change our trust in the measurement based on the tags we can see
+                         var estStdDevs = getEstimationStdDevs();
+                         estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                     });
+         }
+
      }
  
      /**
@@ -103,7 +128,7 @@ import edu.wpi.first.math.numbers.N3;
 
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
-                var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+                var tagPose = photonEstimatorLeft.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 numTags++;
                 avgDist +=
