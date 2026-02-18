@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 
 import frc.robot.Configs;
+import frc.robot.CustomMathUtil;
 import frc.robot.Vision;
  
 public class Shooter extends SubsystemBase{
@@ -29,6 +30,7 @@ public class Shooter extends SubsystemBase{
     private SparkMax intake1;
     private SparkMax intake2;
     private PIDController shooterSpeedPID;
+    private double angle;
 
 
     public Shooter(){
@@ -58,17 +60,26 @@ public class Shooter extends SubsystemBase{
     }
 
     /********                    rotate                  *********/
-    public void turretAngle(double angle){
-        turretMotor.set(angle * 3);
+    public void turretAngle(double wantedAngle){
+        double workingAngle = CustomMathUtil.map(wantedAngle, -765, 765, 0, 1);
+        turretMotor.set(workingAngle);
+        System.out.println("is this working");
     }
 
-    public void angleLeft(){
-        turretMotor.set(turretMotor.getPosition()+.05);
+    public void angleZero(){
+        angle = .5;
+        turretMotor.set(angle);
     }
 
-    public void angleRight(){
-        turretMotor.set(turretMotor.getPosition()-0.05);
+    public void angleNinedy(double wantedAngle){
+        angle = 135;
+        turretMotor.set((((wantedAngle/360)*.22*3)+.5));
+        // turretMotor.set(1);
         System.out.println("down");
+    }
+
+    public double getTurretAngle(){
+        return turretMotor.getPosition();
     }
 
     public void angleStop(){

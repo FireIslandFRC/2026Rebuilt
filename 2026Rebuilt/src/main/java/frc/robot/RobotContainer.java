@@ -58,10 +58,11 @@ public class RobotContainer extends SubsystemBase{
     //lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
     //pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance())));
 
-    // left.onTrue(new InstantCommand(() -> shooterPitch.angleLeft()));
-    left.onTrue(new InstantCommand(() -> customMathUtil.angleToTarget(new Pose2d(3, 4, new Rotation2d(0)))));
-    right.onTrue(new InstantCommand(() -> shooterPitch.angleRight()));
-    up.onTrue(new InstantCommand(() -> shooterPitch.angleUp()));
+    left.onTrue(new InstantCommand(() -> shooterPitch.angleNinedy(0)));
+    // left.onTrue(new InstantCommand(() -> customMathUtil.angleToTarget(new Pose2d(3, 4, new Rotation2d(0)))));
+    right.onTrue(new InstantCommand(() -> shooterPitch.angleNinedy(90)));
+    // up.onTrue(new InstantCommand(() -> shooterPitch.angleUp()));
+    up.onTrue(new InstantCommand(() -> shooterPitch.turretAngle(360)));
     down.onTrue(new InstantCommand(() -> shooterPitch.angleDown()));
     shooterFlywheel.whileTrue(new InstantCommand(() -> shooterPitch.setShootingSpeed(.8)));
     shooterFlywheel.whileFalse(new InstantCommand(() -> shooterPitch.stopFlywheel()));
@@ -77,8 +78,11 @@ public class RobotContainer extends SubsystemBase{
     if (!up.getAsBoolean() && !down.getAsBoolean() && !pitchAngle.getAsBoolean()){
       shooterPitch.angleStop();
     }
-    //System.out.println(shooterPitch.getAngle());
+    System.out.println(shooterPitch.getTurretAngle());
+    shooterPitch.angleNinedy(swerveSubs.getRotation2d().getDegrees());
   }
+
+  
 
 
 }
