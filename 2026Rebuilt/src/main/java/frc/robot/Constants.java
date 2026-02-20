@@ -38,9 +38,9 @@ public class Constants {
     public static final String kCameraNameLeft = "Left";
     public static final String kCameraNameRight = "Right";    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCamRight =
-            new Transform3d(new Translation3d(Units.inchesToMeters(9), Units.inchesToMeters(5.5), Units.inchesToMeters(8.5)), new Rotation3d(0, Units.degreesToRadians(12), Units.degreesToRadians(20)));
+            new Transform3d(new Translation3d(Units.inchesToMeters(9), Units.inchesToMeters(5.5), Units.inchesToMeters(8.5)), new Rotation3d(0, Units.degreesToRadians(19), Units.degreesToRadians(14)));
     public static final Transform3d kRobotToCamLeft =
-            new Transform3d(new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(-4.5), Units.inchesToMeters(9.25)), new Rotation3d(0, Units.degreesToRadians(18), -25));
+            new Transform3d(new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(-4.5), Units.inchesToMeters(9.25)), new Rotation3d(0, Units.degreesToRadians(21), Units.degreesToRadians(-15)));
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
             AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
