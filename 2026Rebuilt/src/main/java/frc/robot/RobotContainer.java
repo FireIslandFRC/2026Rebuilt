@@ -4,6 +4,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.S_DriveCommand;
+import frc.robot.commands.turretToTarget;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -37,7 +38,7 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton index = new JoystickButton(D_CONTROLLER, 4);
   public RobotContainer() {
 
-        swerveSubs.resetOdometry(new Pose2d(8.33,4.23, new Rotation2d(0)));
+        swerveSubs.resetOdometry(new Pose2d(0,4.23, new Rotation2d(0)));
 
     swerveSubs.setDefaultCommand(
       new S_DriveCommand(
@@ -58,12 +59,11 @@ public class RobotContainer extends SubsystemBase{
     //lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
     //pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance())));
 
-    left.onTrue(new InstantCommand(() -> shooterPitch.angleNinedy(0)));
+    left.onTrue(new InstantCommand(() -> shooterPitch.turretAngle(0)));
     // left.onTrue(new InstantCommand(() -> customMathUtil.angleToTarget(new Pose2d(3, 4, new Rotation2d(0)))));
-    right.onTrue(new InstantCommand(() -> shooterPitch.angleNinedy(90)));
+    right.onTrue(new InstantCommand(() -> shooterPitch.turretAngle(90)));
     // up.onTrue(new InstantCommand(() -> shooterPitch.angleUp()));
-    up.onTrue(new InstantCommand(() -> shooterPitch.turretAngle(360)));
-    down.onTrue(new InstantCommand(() -> shooterPitch.angleDown()));
+    down.onTrue(new turretToTarget(shooterPitch, customMathUtil, swerveSubs));
     shooterFlywheel.whileTrue(new InstantCommand(() -> shooterPitch.setShootingSpeed(.8)));
     shooterFlywheel.whileFalse(new InstantCommand(() -> shooterPitch.stopFlywheel()));
     index.whileTrue(new InstantCommand(() -> shooterPitch.setIntake()));
@@ -78,11 +78,12 @@ public class RobotContainer extends SubsystemBase{
     if (!up.getAsBoolean() && !down.getAsBoolean() && !pitchAngle.getAsBoolean()){
       shooterPitch.angleStop();
     }
-    System.out.println(shooterPitch.getTurretAngle());
-    shooterPitch.angleNinedy(swerveSubs.getRotation2d().getDegrees());
+    //System.out.println(shooterPitch.getTurretAngle());
+
+    
+    
   }
 
-  
 
 
 }

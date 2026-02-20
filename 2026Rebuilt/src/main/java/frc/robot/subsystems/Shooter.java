@@ -60,22 +60,15 @@ public class Shooter extends SubsystemBase{
     }
 
     /********                    rotate                  *********/
-    public void turretAngle(double wantedAngle){
-        double workingAngle = CustomMathUtil.map(wantedAngle, -765, 765, 0, 1);
-        turretMotor.set(workingAngle);
-        System.out.println("is this working");
-    }
-
     public void angleZero(){
         angle = .5;
         turretMotor.set(angle);
     }
 
-    public void angleNinedy(double wantedAngle){
-        angle = 135;
-        turretMotor.set((((wantedAngle/360)*.22*3)+.5));
+    public void turretAngle(double wantedAngle){
+        turretMotor.set(-1*(((wantedAngle/360)*.22*3)+.5));
         // turretMotor.set(1);
-        System.out.println("down");
+        System.out.println(wantedAngle);
     }
 
     public double getTurretAngle(){

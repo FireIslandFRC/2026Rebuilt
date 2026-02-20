@@ -52,6 +52,14 @@ public class CustomMathUtil {
         return(value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
 
+    public static double turretAngleToTarget(Pose2d robotPose) {
+        double xDist = 2 - robotPose.getX(); // Assuming target is at (8, 8)
+        double yDist = 4.5 - robotPose.getY();
+        double currentRotation = robotPose.getRotation().getDegrees();
+        double targetAngleRad = Math.atan2(yDist, xDist);
+        double targetAngleDeg = Math.toDegrees(targetAngleRad);
+        double angleDifference = targetAngleDeg + currentRotation;
+        System.out.println(angleDifference);
+        return angleDifference;
+    }
 }
-
-    
