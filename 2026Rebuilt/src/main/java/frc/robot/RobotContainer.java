@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.Autos;
 import frc.robot.commands.S_DriveCommand;
@@ -10,6 +11,7 @@ import frc.robot.commands.Intake.IntakeUp;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
+import frc.robot.commands.turretToTarget;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -23,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.Intake;
 import frc.robot.Vision;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer extends SubsystemBase{
     private final AutoFactory autoFactory;
@@ -31,6 +34,9 @@ public class RobotContainer extends SubsystemBase{
   
   private final SwerveSubsystem swerveSubs = new SwerveSubsystem();
   private final Intake intakeSubs          = new Intake();
+  private final Shooter shooterPitch = new Shooter();
+  private final CustomMathUtil customMathUtil = new CustomMathUtil();
+  private final Vision vision = new Vision(swerveSubs::addVisionMeasurement);
   //Joystick setting
   public final static XboxController D_CONTROLLER  = new XboxController(ControllerConstants.kDriverControllerPort);
   public final static XboxController OP_CONTROLLER = new XboxController(ControllerConstants.kOperatorControllerPort);
