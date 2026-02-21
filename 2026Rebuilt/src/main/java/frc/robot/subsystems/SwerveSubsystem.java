@@ -240,6 +240,17 @@ public class SwerveSubsystem extends SubsystemBase {
         drive(speeds);
   }
 
+  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
+    m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+  }
+
+  /** See {@link SwerveDrivePoseEstimator#addVisionMeasurement(Pose2d, double, Matrix)}. */
+  public void addVisionMeasurement(
+    Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
+
+    m_poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
+  }
+
   /* * * WHEEL METHODS * * */
   public void lock() {
     SwerveModuleState[] states = new SwerveModuleState[4];
@@ -295,7 +306,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Pigeon", pigeon.getYaw().getValueAsDouble());
     
-  //  m_field.setRobotPose(getPose());
+    m_field.setRobotPose(getPose());
     //SmartDashboard.putData(m_poseEstimator.getEstimatedPosition().);
   } 
 }

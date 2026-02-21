@@ -17,12 +17,6 @@ public class turretToTarget extends Command {
   private CustomMathUtil customMathUtil;
   private SwerveSubsystem swerveSubs;
 
-  private DoubleSupplier xSupplier, ySupplier, zSupplier;
-  private BooleanSupplier fieldOriented;
-  private double SpeedMultiplier;
-  private BooleanSupplier speedIncrease, speedDecrease;
-  private int invert;
-
   /* * * CONSTRUCTOR * * */
   /* 
    * @param swerveSubs the swerve subsystem 
