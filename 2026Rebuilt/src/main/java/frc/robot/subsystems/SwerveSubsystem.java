@@ -14,9 +14,11 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -37,6 +39,12 @@ import frc.robot.Robot;
 public class SwerveSubsystem extends SubsystemBase {
   /* * * INITIALIZATION * * */
 
+  // private final PIDController xController = new PIDController(3, 0.0, 0.01);
+  // private final PIDController yController = new PIDController(3, 0.0, 0.01);
+  private final PIDController xController = new PIDController(2, 0.0, .03);
+  private final PIDController yController = new PIDController(2, 0.0, .03);
+  private final PIDController headingController = new PIDController(0, 0.0, 0.0);
+
   //initialize SwerveModules 
   private SwerveModule[] swerveModules; 
 
@@ -49,8 +57,9 @@ public class SwerveSubsystem extends SubsystemBase {
   //instantiate poseEstimator
   private SwerveDrivePoseEstimator m_poseEstimator;
 
-  private final PhotonCamera camera;
-  private final PhotonPoseEstimator photonEstimator;
+  public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+   public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
 
   // swervesubsystem constructor
   public SwerveSubsystem() {
@@ -73,23 +82,23 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.DRIVE_KINEMATICS, getRotation2d(), getModulePositions(), new Pose2d(0,0,new Rotation2d()));
 
+
   }
 
   /* * * RESET METHODS * * */
 
   public void resetPigeon() {
-  /*if (DriverStation.getAlliance().isPresent()
-       && DriverStation.getAlliance().get() == Alliance.Red) {
-       pigeon.setYaw(180);
-     } else {
-       pigeon.setYaw(0);
-     }*/
-
-    pigeon.setYaw(0);
+   if (DriverStation.getAlliance().isPresent()
+      && DriverStation.getAlliance().get() == Alliance.Red) {
+      pigeon.setYaw(180);
+    } else {
+      pigeon.setYaw(0);
+    }
+    // pigeon.setYaw(0);
   }
   
   public void resetOdometry() {
-    m_poseEstimator.resetPosition(getRotation2d(), getModulePositions(), new Pose2d(10,10, new Rotation2d(0)));
+    m_poseEstimator.resetPosition(getRotation2d(), getModulePositions(), new Pose2d());
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -186,15 +195,26 @@ public class SwerveSubsystem extends SubsystemBase {
       );
       
     }
+    
+    setModuleStates(states);
+  }
 
+  public void drive(ChassisSpeeds fieldRelativeSpeeds) {
+    SwerveModuleState[] states;
+    ChassisSpeeds robotRelative = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getRotation2d());
 
+    states = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(robotRelative);
+    setModuleStates(states);
+  }
 
-    // Double[] swerveArr = {states[0].angle.getDegrees(),states[1].angle.getDegrees(),states[2].angle.getDegrees(),states[3].angle.getDegrees()};
+  public void driveWithChassis(ChassisSpeeds speeds){
+    SwerveModuleState[] statess;
 
-    // SmartDashboard.putNumberArray("swerveTest", swerveArr); //NOTE the thing
+    statess = SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
+        speeds
+      );
 
-    setModuleStates(states);   
-
+      setModuleStates(statess);
   }
 
   public void driveRobotRelative(ChassisSpeeds chassis) {
@@ -204,6 +224,21 @@ public class SwerveSubsystem extends SubsystemBase {
     //Limited for auto
     setModuleStates(state, 0.10);
 
+  }
+
+  public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+
+        // Apply the generated speeds
+        drive(speeds);
   }
 
   /* * * WHEEL METHODS * * */
