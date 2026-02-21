@@ -3,6 +3,7 @@ package frc.robot;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.ShooterPitch;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.Autos;
 import frc.robot.commands.S_DriveCommand;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -24,6 +25,7 @@ import frc.robot.Vision;
 public class RobotContainer extends SubsystemBase{
     private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
+    private final Autos autos;
   
   private final SwerveSubsystem swerveSubs = new SwerveSubsystem();
   private final ShooterPitch shooterPitch = new ShooterPitch();
@@ -52,13 +54,14 @@ public class RobotContainer extends SubsystemBase{
             swerveSubs // The drive subsystem
         );
 
+    autos = new Autos(swerveSubs, autoFactory);
+
     // Follows deploy/choreo/myTrajectory.traj
 
-    swerveSubs.resetOdometry(new Pose2d(8.25,4, new Rotation2d(0)));
+    // swerveSubs.resetOdometry(new Pose2d(8.25,4, new Rotation2d(0)));
 
-    autoChooser.addCmd("MyTrajectory", this::myTrajectoryCommand);
-    autoChooser.addCmd("line", this::myLineCommand);
-    autoChooser.addRoutine("Example Routine", this::exampleRoutine);
+    autoChooser.addRoutine("MoveFoward", autos::moveFoward);
+    // autoChooser.addRoutine("DriveFoward", this::exampleRoutine);
 
 
     // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
@@ -79,7 +82,7 @@ public class RobotContainer extends SubsystemBase{
       )
     );
     configureBindings();
-        SmartDashboard.putData("hi", autoChooser);
+    SmartDashboard.putData("autoChoser", autoChooser);
         // SmartDashboard.putBoolean("HI", );
 
     // Schedule the selected auto during the autonomous period
