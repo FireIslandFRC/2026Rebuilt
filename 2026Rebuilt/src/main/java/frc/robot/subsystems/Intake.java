@@ -18,17 +18,19 @@ public class Intake extends SubsystemBase{
 
     private SparkMax intakeMotorLeft;
     private SparkMax intakeMotorRight;
+    private SparkFlex intakeMotor;
     private SparkClosedLoopController intakeMotorLeftController;
     private SparkClosedLoopController intakeMotorRightController;
 
     public Intake(){
         intakeMotorLeft = new SparkMax(41, MotorType.kBrushless);
         intakeMotorRight = new SparkMax(42, MotorType.kBrushless);
+        intakeMotor = new SparkFlex(13, MotorType.kBrushless);
         intakeMotorLeftController = intakeMotorLeft.getClosedLoopController();
         intakeMotorRightController = intakeMotorRight.getClosedLoopController();
         intakeMotorLeft.configure(Configs.SwerveModuleConfig.intakeConfigL, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
         intakeMotorRight.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        
+        intakeMotorRight.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
     }
 
     public void setAngle(double distance){
@@ -38,17 +40,22 @@ public class Intake extends SubsystemBase{
 
     public void IntakeUp(){
         intakeMotorLeft.set(.35);
-        intakeMotorRight.set(.35x);
-        // System.out.println("up");
-        // intakeMotorLeft.set(1);
-        // intakeMotorRight.set(1);
-        System.out.println(intakeMotorLeft.getEncoder().getPosition());
+        intakeMotorRight.set(.35);
+        intakeMotor.stopMotor();
     }
 
     public void IntakeDown(){
         intakeMotorLeft.set(-.2);
         intakeMotorRight.set(-.2);
-        //System.out.println("down");
+        intakeMotorRight.set(.5);
+    }
+
+    public void IntakeIn(){
+        intakeMotor.set(-.3);
+    }
+
+    public void IntakeOut(){
+        intakeMotor.set(0);
     }
 
     public void stop(){

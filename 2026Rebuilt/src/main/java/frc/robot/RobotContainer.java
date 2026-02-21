@@ -33,11 +33,12 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton speedSlow = new JoystickButton(D_CONTROLLER, 11);
   private final JoystickButton speedEmergency = new JoystickButton(D_CONTROLLER, 10);
   private final JoystickButton fieldOriented = new JoystickButton(D_CONTROLLER, 12);
-  private final JoystickButton up = new JoystickButton(D_CONTROLLER, 1);
-  private final JoystickButton down = new JoystickButton(D_CONTROLLER, 2);
+  private final JoystickButton up = new JoystickButton(D_CONTROLLER, 4);
+  private final JoystickButton down = new JoystickButton(D_CONTROLLER, 1);
+  private final JoystickButton intakeIn = new JoystickButton(D_CONTROLLER, 3);
+  private final JoystickButton intakeOut = new JoystickButton(D_CONTROLLER, 2);
 
   public RobotContainer() {
-
 
     // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
     //   (stream) -> isCompetition
@@ -66,6 +67,8 @@ public class RobotContainer extends SubsystemBase{
 
     up.whileTrue(new intakeUp(intakeSubs));
     down.whileTrue(new intakeDown(intakeSubs));
+    intakeIn.whileTrue(new InstantCommand(() -> intakeSubs.IntakeIn()));
+    intakeOut.whileTrue(new InstantCommand(() -> intakeSubs.IntakeOut()));
   }
 
   @Override

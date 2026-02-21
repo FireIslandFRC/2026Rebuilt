@@ -11,8 +11,9 @@ public final class Configs {
                 public static final SparkFlexConfig drivingConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig turningConfig = new SparkFlexConfig();
                 public static final SparkMaxConfig pitchConfig = new SparkMaxConfig();
-                public static final SparkFlexConfig intakeConfigL = new SparkFlexConfig();
-                public static final SparkFlexConfig intakeConfigR = new SparkFlexConfig();
+                public static final SparkMaxConfig intakeConfigL = new SparkMaxConfig();
+                public static final SparkMaxConfig intakeConfigR = new SparkMaxConfig();
+                public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
 
                 static {
 
@@ -39,6 +40,11 @@ public final class Configs {
 
                         intakeConfigR.closedLoop
                                         .pid(0.6, 0, 0);
+
+                        intakeConfig
+                                        .idleMode(IdleMode.kBrake)
+                                        .smartCurrentLimit(40)
+                                        .inverted(false);
 
                         turningConfig
                                         .idleMode(IdleMode.kBrake)

@@ -34,6 +34,10 @@ public class Constants {
     public static final int kOperatorControllerPort = 1;
   }
 
+  // public static class IntakeConstants {
+  //   public static final int kIntakeArmR = 
+  // }
+
   public static class Vision {
     public static final String kCameraName = "Arducam_OV9281_USB_Camera";
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
