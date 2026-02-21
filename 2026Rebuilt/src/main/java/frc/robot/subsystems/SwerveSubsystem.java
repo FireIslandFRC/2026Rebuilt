@@ -6,6 +6,8 @@ import org.photonvision.PhotonPoseEstimator;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import choreo.trajectory.SwerveSample;
+
 import static frc.robot.Constants.Vision.*;
 
 import java.util.Optional;
@@ -59,13 +61,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-   public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
 
   // swervesubsystem constructor
   public SwerveSubsystem() {
-
-    camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-    photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
     
     pigeon.reset();
 
@@ -279,31 +277,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   }
 
-  public void updateVisionOdometry() {
-      Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var result : camera.getAllUnreadResults()) {
-            visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
-            if (visionEst.isEmpty()) {
-                //visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
-            }
-
-            visionEst.ifPresent(
-                    est -> {
-                        // Change our trust in the measurement based on the tags we can see\
-
-                        m_poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds);
-                        m_field.setRobotPose(est.estimatedPose.toPose2d());
-
-                    });
-
-        }
-  }
-
-  /*@Override
+  @Override
   public void periodic() {    
     // This method will be called once per scheduler run
-    updateVisionOdometry();
-    System.out.println();
 
     m_poseEstimator.update(
         pigeon.getRotation2d(),
@@ -320,5 +296,5 @@ public class SwerveSubsystem extends SubsystemBase {
     
   //  m_field.setRobotPose(getPose());
     //SmartDashboard.putData(m_poseEstimator.getEstimatedPosition().);
-  } */
+  } 
 }

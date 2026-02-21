@@ -5,8 +5,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.Autos;
 import frc.robot.commands.S_DriveCommand;
-import frc.robot.commands.intakeDown;
-import frc.robot.commands.intakeUp;
+import frc.robot.commands.Intake.IntakeDown;
+import frc.robot.commands.Intake.IntakeUp;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -30,17 +30,29 @@ public class RobotContainer extends SubsystemBase{
     private final Autos autos;
   
   private final SwerveSubsystem swerveSubs = new SwerveSubsystem();
-  private final Intake intakeSubs = new Intake();
+  private final Intake intakeSubs          = new Intake();
   //Joystick setting
-  public final static XboxController D_CONTROLLER = new XboxController(ControllerConstants.kDriverControllerPort);
+  public final static XboxController D_CONTROLLER  = new XboxController(ControllerConstants.kDriverControllerPort);
+  public final static XboxController OP_CONTROLLER = new XboxController(ControllerConstants.kOperatorControllerPort);
   //DRIVE BUTTONS     
-  private final JoystickButton speedSlow = new JoystickButton(D_CONTROLLER, 11);
+  private final JoystickButton speedSlow      = new JoystickButton(D_CONTROLLER, 11);
   private final JoystickButton speedEmergency = new JoystickButton(D_CONTROLLER, 10);
-  private final JoystickButton fieldOriented = new JoystickButton(D_CONTROLLER, 12);
-  private final JoystickButton up = new JoystickButton(D_CONTROLLER, 4);
-  private final JoystickButton down = new JoystickButton(D_CONTROLLER, 1);
-  private final JoystickButton intakeIn = new JoystickButton(D_CONTROLLER, 3);
-  private final JoystickButton intakeOut = new JoystickButton(D_CONTROLLER, 2);
+  private final JoystickButton resetGyro      = new JoystickButton(D_CONTROLLER, 3);
+  private final JoystickButton fieldOriented  = new JoystickButton(D_CONTROLLER, 12);
+  //TODO: SLOWMODE AND FAST MODE TO TRIGGERS
+  private final JoystickButton driveToScoreL  = new JoystickButton(D_CONTROLLER, 5);
+  private final JoystickButton driveToScoreR  = new JoystickButton(D_CONTROLLER, 6);
+  private final JoystickButton driveToMid     = new JoystickButton(D_CONTROLLER, 2);
+  private final JoystickButton driveToClimb   = new JoystickButton(D_CONTROLLER, 4);
+
+  private final JoystickButton shoot       = new JoystickButton(OP_CONTROLLER, 1);
+  private final JoystickButton shootSimple = new JoystickButton(OP_CONTROLLER, 4);
+  private final JoystickButton turretLeft  = new JoystickButton(OP_CONTROLLER, 9);
+  private final JoystickButton turretRight = new JoystickButton(OP_CONTROLLER, 10);
+  private final JoystickButton flywheel    = new JoystickButton(OP_CONTROLLER, 3);
+  private final JoystickButton intake      = new JoystickButton(OP_CONTROLLER, 5);
+
+
 
   public RobotContainer() {
 
@@ -56,21 +68,9 @@ public class RobotContainer extends SubsystemBase{
 
     autos = new Autos(swerveSubs, autoFactory);
 
-    // Follows deploy/choreo/myTrajectory.traj
-
-    // swerveSubs.resetOdometry(new Pose2d(8.25,4, new Rotation2d(0)));
-
     autoChooser.addRoutine("MoveFoward", autos::moveFoward);
-    // autoChooser.addRoutine("DriveFoward", this::exampleRoutine);
 
-
-    // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-    //   (stream) -> isCompetition
-    //     ? stream.filter(auto -> auto.getName().startsWith("comp"))
-    //     : stream
-    // );
-
-    /*swerveSubs.setDefaultCommand(
+    swerveSubs.setDefaultCommand(
       new S_DriveCommand(
         swerveSubs,
         () -> -D_CONTROLLER.getLeftY(), 
@@ -80,41 +80,18 @@ public class RobotContainer extends SubsystemBase{
         () -> speedSlow.getAsBoolean(),
         () -> speedEmergency.getAsBoolean() 
       )
-    );*/
+    );
+
     configureBindings();
+
     SmartDashboard.putData("autoChoser", autoChooser);
-        // SmartDashboard.putBoolean("HI", );
 
   }
 
   private void configureBindings() {
-    //lockbutton.onTrue(new InstantCommand(() -> swerveSubs.lock())); //CHECKME not sure how it behaves
-    //pitchAngle.whileTrue(new InstantCommand(() -> shooterPitch.setAngle(vision.targetDistance()))); //NOTE: reimplement old vision to work
-
-    up.whileTrue(new InstantCommand(() -> shooterPitch.angleUp()));
-    down.whileTrue(new InstantCommand(() -> shooterPitch.angleDown()));
+    
   }
-
-  public Command myTrajectoryCommand() {
-    return autoFactory.trajectoryCmd("myTrajectory");
-  }
-
-  public Command myLineCommand() {
-    return autoFactory.trajectoryCmd("line");
-  }
-
-  private AutoRoutine exampleRoutine() {
-       AutoRoutine routine = autoFactory.newRoutine("taxi");
-
-           return routine;
-
-    }
-    up.whileTrue(new intakeUp(intakeSubs));
-    down.whileTrue(new intakeDown(intakeSubs));
-    intakeIn.whileTrue(new InstantCommand(() -> intakeSubs.IntakeIn()));
-    intakeOut.whileTrue(new InstantCommand(() -> intakeSubs.IntakeOut()));
-  }
-
+    
   @Override
   public void periodic() {
   }

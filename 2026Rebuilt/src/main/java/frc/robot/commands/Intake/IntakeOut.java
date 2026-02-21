@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Intake;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class intakeUp extends Command {
-  private Intake intakeSus; 
+public class IntakeOut extends Command {
+  private Intake intakeSubs; 
 
 
-  public intakeUp(Intake intakeSus) {
-    this.intakeSus = intakeSus;
-    addRequirements(intakeSus);
+  public IntakeOut(Intake intakeSubs) {
+    this.intakeSubs = intakeSubs;
+    addRequirements(intakeSubs);
   }
 
   // Called when the command is initially scheduled.
@@ -26,14 +26,14 @@ public class intakeUp extends Command {
   @Override
   public void execute() {
 
-    intakeSus.IntakeUp();
+    intakeSubs.intakeOut();
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSus.stop();
+    intakeSubs.stop();
   }
 
   // Returns true when the command should end.

@@ -34,9 +34,25 @@ public class Constants {
     public static final int kOperatorControllerPort = 1;
   }
 
-  // public static class IntakeConstants {
-  //   public static final int kIntakeArmR = 
-  // }
+  public static class IntakeConstants {
+    public static final int kIntakeArmR = 12;
+    public static final int kIntakeArmL = 11;
+    public static final int kIntakeArmRollers = 13;
+    public static final int kIntakeUpPos = 0;
+    public static final int kIntakeDownPos = 0; //TODO: get encoder value
+  }
+
+  public static class TurretConstants {
+    public static final int kRotationServo = 1;
+    public static final int kPitchServo = 2;
+    public static final int kFlywheel = 16;
+  }
+
+  public static class IndexerConstants {
+    public static final int kCentralizerL = 14;
+    public static final int kCentralizerR = 15;
+    public static final int KSpindexer = 10;
+  }
 
   public static class Vision {
     public static final String kCameraNameLeft = "Left";

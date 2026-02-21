@@ -2,20 +2,17 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix.motorcontrol.ControlFrame;
-import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import frc.robot.Constants.IntakeConstants;
 
 import frc.robot.Configs;
  
 public class Intake extends SubsystemBase{
-
     private SparkMax intakeMotorLeft;
     private SparkMax intakeMotorRight;
     private SparkFlex intakeMotor;
@@ -23,14 +20,16 @@ public class Intake extends SubsystemBase{
     private SparkClosedLoopController intakeMotorRightController;
 
     public Intake(){
-        intakeMotorLeft = new SparkMax(41, MotorType.kBrushless);
-        intakeMotorRight = new SparkMax(42, MotorType.kBrushless);
-        intakeMotor = new SparkFlex(13, MotorType.kBrushless);
+        intakeMotorLeft = new SparkMax(IntakeConstants.kIntakeArmL, MotorType.kBrushless);
+        intakeMotorRight = new SparkMax(IntakeConstants.kIntakeArmR, MotorType.kBrushless);
+        intakeMotor = new SparkFlex(IntakeConstants.kIntakeArmRollers, MotorType.kBrushless);
+
         intakeMotorLeftController = intakeMotorLeft.getClosedLoopController();
         intakeMotorRightController = intakeMotorRight.getClosedLoopController();
+
         intakeMotorLeft.configure(Configs.SwerveModuleConfig.intakeConfigL, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
         intakeMotorRight.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        intakeMotorRight.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
+        intakeMotor.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
     }
 
     public void setAngle(double distance){
@@ -38,33 +37,36 @@ public class Intake extends SubsystemBase{
         System.out.println(distance);
     }
 
-    public void IntakeUp(){
-        intakeMotorLeft.set(.35);
-        intakeMotorRight.set(.35);
-        intakeMotor.stopMotor();
-    }
-
-    public void IntakeDown(){
-        intakeMotorLeft.set(-.2);
-        intakeMotorRight.set(-.2);
-        intakeMotorRight.set(.5);
-    }
-
-    public void IntakeIn(){
-        intakeMotor.set(-.3);
-    }
-
-    public void IntakeOut(){
+    public void intakeUp(){
+        intakeMotorLeftController.setSetpoint(IntakeConstants.kIntakeUpPos, ControlType.kPosition);
         intakeMotor.set(0);
+    }
+
+    public void intakeDown(){
+        intakeMotorLeftController.setSetpoint(IntakeConstants.kIntakeDownPos, ControlType.kPosition);
+        intakeMotor.set(.3);
+    }
+
+    public void intakeIn(){
+        intakeMotor.set(.3);
+    }
+
+    public void intakeOut(){
+        intakeMotor.set(-.3);
     }
 
     public void stop(){
         intakeMotorLeft.set(0);
         intakeMotorRight.set(0);
-        System.out.println("Why");
+        intakeMotor.set(0);
+    }
+
+    public void stopArms(){
+        intakeMotorLeft.set(0);
+        intakeMotorRight.set(0);
     }
     
-    public double getAngle(){
+    public double getIntakeAngle(){
         return intakeMotorLeft.getEncoder().getPosition();    
     }
 }
