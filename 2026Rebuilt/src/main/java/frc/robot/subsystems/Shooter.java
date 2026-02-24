@@ -61,14 +61,20 @@ public class Shooter extends SubsystemBase{
 
     /********                    rotate                  *********/
     public void angleZero(){
-        angle = .5;
-        turretMotor.set(angle);
+        turretMotor.set(.5);
     }
 
     public void turretAngle(double wantedAngle){
         turretMotor.set(-1*(((wantedAngle/360)*.22*3)+.5));
-        // turretMotor.set(1);
         System.out.println(wantedAngle);
+    }
+
+    public void turretRight(){
+        turretMotor.set(turretMotor.getAngle() - .05);
+    }
+
+    public void turretLeft(){
+        turretMotor.set(turretMotor.getAngle() + .05);
     }
 
     public double getTurretAngle(){

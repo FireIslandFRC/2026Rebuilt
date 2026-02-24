@@ -8,12 +8,16 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.Autos;
 import frc.robot.commands.S_DriveCommand;
 import frc.robot.commands.Intake.IntakeDown;
+import frc.robot.commands.Intake.IntakeHold;
 import frc.robot.commands.Intake.IntakeUp;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
-import frc.robot.commands.turretToTarget;
+import frc.robot.commands.Turret.TurretLeft;
+import frc.robot.commands.Turret.TurretRight;
+import frc.robot.commands.Turret.TurretToTarget;
 import frc.robot.commands.Indexer.RunSpindexer;
+import frc.robot.commands.Intake.IntakeHold;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -24,9 +28,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.Intake;
 import frc.robot.Vision;
+import frc.robot.Configs.SwerveModuleConfig;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer extends SubsystemBase{
@@ -37,7 +43,7 @@ public class RobotContainer extends SubsystemBase{
   private final SwerveSubsystem swerveSubs    = new SwerveSubsystem();
   private final Intake intakeSubs             = new Intake();
   private final Indexer indexerSubs           = new Indexer();
-  private final Shooter shooterPitch          = new Shooter();
+  private final Shooter shooter                = new Shooter();
   private final CustomMathUtil customMathUtil = new CustomMathUtil();
   private final Vision vision                 = new Vision(swerveSubs::addVisionMeasurement);
   //Joystick setting
@@ -51,7 +57,10 @@ public class RobotContainer extends SubsystemBase{
   //TODO: SLOWMODE AND FAST MODE TO TRIGGERS
   private final JoystickButton driveToScoreL  = new JoystickButton(D_CONTROLLER, 5);
   private final JoystickButton driveToScoreR  = new JoystickButton(D_CONTROLLER, 6);
-  private final JoystickButton driveToMid     = new JoystickButton(D_CONTROLLER, 2);
+  private final POVButton driveToScoreLPOV  = new POVButton(D_CONTROLLER, 5);
+  private final POVButton driveToScoreRPOV  = new POVButton(D_CONTROLLER, 6);//TODO: angles
+  private final JoystickButton driveToMidR     = new JoystickButton(D_CONTROLLER, 2);
+  private final JoystickButton driveToMidL     = new JoystickButton(D_CONTROLLER, 2);
   private final JoystickButton driveToClimb   = new JoystickButton(D_CONTROLLER, 4);
 
   private final JoystickButton shoot       = new JoystickButton(OP_CONTROLLER, 1);
@@ -99,7 +108,21 @@ public class RobotContainer extends SubsystemBase{
   }
 
   private void configureBindings() {
-    runToPosition.whileTrue(autos.moveFoward().cmd());
+    driveToScoreL.whileTrue(autos.MidLhoot().cmd());
+    driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
+    driveToScoreR.whileTrue(autos.MidRhoot().cmd());
+    driveToScoreRPOV.whileTrue(autos.MidRhoot().cmd());
+
+    driveToMidR.whileTrue(autos.RightMid().cmd());
+    driveToMidL.whileTrue(autos.LeftMid().cmd());
+
+    intake.whileTrue(new IntakeHold(intakeSubs));
+
+    turretLeft.whileTrue(new TurretLeft(shooter));
+    turretRight.whileTrue(new TurretRight(shooter));
+
+    resetGyro.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));
+    runToPosition.whileTrue(autos.moveFowardTele().cmd());
     spindexer.whileTrue(new RunSpindexer(indexerSubs));
   }
     

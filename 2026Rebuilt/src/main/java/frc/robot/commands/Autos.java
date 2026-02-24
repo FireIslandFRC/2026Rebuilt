@@ -24,6 +24,15 @@ public final class Autos {
         kMaxTrajectoryTimeoutSeconds = 5;
     }
 
+    public AutoRoutine moveFowardTele() {
+        AutoRoutine routine = autoFactory.newRoutine("moveFoward");
+
+        AutoTrajectory drive = routine.trajectory("drive");
+
+        routine.active().onTrue(drive.cmd().withTimeout(kMaxTrajectoryTimeoutSeconds));
+
+        return routine;
+    }
     public AutoRoutine moveFoward() {
         AutoRoutine routine = autoFactory.newRoutine("moveFoward");
 
@@ -31,7 +40,56 @@ public final class Autos {
 
         routine.active().onTrue(
                 Commands.sequence(drive.resetOdometry(),
-                        drive.cmd().withTimeout(kMaxTrajectoryTimeoutSeconds)));
+                        drive.cmd(
+                        ).withTimeout(kMaxTrajectoryTimeoutSeconds)));
+
+        return routine;
+    }
+
+    public AutoRoutine RightMid() {
+        AutoRoutine routine = autoFactory.newRoutine("RightMid");
+
+        AutoTrajectory RightMid = routine.trajectory("RightMid");
+
+        routine.active().onTrue(
+                        RightMid.cmd(
+                        ).withTimeout(kMaxTrajectoryTimeoutSeconds));
+
+        return routine;
+    }
+
+    public AutoRoutine LeftMid() {
+        AutoRoutine routine = autoFactory.newRoutine("LeftMid");
+
+        AutoTrajectory LeftMid = routine.trajectory("LeftMid");
+
+        routine.active().onTrue(
+                        LeftMid.cmd(
+                        ).withTimeout(kMaxTrajectoryTimeoutSeconds));
+
+        return routine;
+    }
+
+    public AutoRoutine MidRhoot() {
+        AutoRoutine routine = autoFactory.newRoutine("MidRhoot");
+
+        AutoTrajectory MidRhoot = routine.trajectory("MidRhoot");
+
+        routine.active().onTrue(
+                        MidRhoot.cmd(
+                        ).withTimeout(kMaxTrajectoryTimeoutSeconds));
+
+        return routine;
+    }
+
+    public AutoRoutine MidLhoot() {
+        AutoRoutine routine = autoFactory.newRoutine("MidLhoot");
+
+        AutoTrajectory MidLhoot = routine.trajectory("MidLhoot");
+
+        routine.active().onTrue(
+                        MidLhoot.cmd(
+                        ).withTimeout(kMaxTrajectoryTimeoutSeconds));
 
         return routine;
     }

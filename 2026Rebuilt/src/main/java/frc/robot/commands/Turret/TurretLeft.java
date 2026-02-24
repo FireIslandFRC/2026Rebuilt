@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Turret;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -12,10 +12,8 @@ import frc.robot.CustomMathUtil;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class turretToTarget extends Command {
-  private Shooter shooterSubs; 
-  private CustomMathUtil customMathUtil;
-  private SwerveSubsystem swerveSubs;
+public class TurretLeft extends Command {
+  private Shooter shooterSubs;
 
   /* * * CONSTRUCTOR * * */
   /* 
@@ -25,10 +23,8 @@ public class turretToTarget extends Command {
    * @param zSupplier value input for rotation 
    * @param fieldOriented whether or not we want the bot to run in field oriented 
    */
-  public turretToTarget(Shooter shooterSubs, CustomMathUtil customMathUtil, SwerveSubsystem swerveSubs) {
-    this.shooterSubs = shooterSubs; 
-    this.customMathUtil = customMathUtil;
-    this.swerveSubs = swerveSubs;
+  public TurretLeft(Shooter shooterSubs) {
+    this.shooterSubs = shooterSubs;
     addRequirements(shooterSubs);
   }
 
@@ -40,8 +36,7 @@ public class turretToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double neededAngle = customMathUtil.turretAngleToTarget(swerveSubs.getPose());
-    shooterSubs.turretAngle(neededAngle);
+    shooterSubs.turretLeft();
   }
 
   // Called once the command ends or is interrupted.

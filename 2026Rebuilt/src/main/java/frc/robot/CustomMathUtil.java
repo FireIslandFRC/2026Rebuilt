@@ -27,6 +27,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.Constants.PoseConstants;;
 
 public class CustomMathUtil {
 
@@ -34,7 +35,6 @@ public class CustomMathUtil {
     private Rotation2d currentRotation;
 
     public CustomMathUtil() {
-        targetPose = new Pose2d(8, 8, new Rotation2d(0)); // Example target pose
     }
 
     public double distanceToTarget(Pose2d robotPose) {
@@ -53,8 +53,8 @@ public class CustomMathUtil {
     }
 
     public double turretAngleToTarget(Pose2d robotPose) {
-        double xDist = 2 - robotPose.getX(); // Assuming target is at (8, 8)
-        double yDist = 4.5 - robotPose.getY();
+        double xDist = PoseConstants.TargetHubPose.getX() - robotPose.getX(); // Assuming target is at (8, 8)
+        double yDist = PoseConstants.TargetHubPose.getY() - robotPose.getY();
         double currentRotation = robotPose.getRotation().getDegrees();
         double targetAngleRad = Math.atan2(yDist, xDist);
         double targetAngleDeg = Math.toDegrees(targetAngleRad);

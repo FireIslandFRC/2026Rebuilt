@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -26,8 +32,13 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public class Constants {
-
-  public static final int PhID = 15;
+  static Optional<Alliance> alliance = DriverStation.getAlliance();
+  
+    public static final int PhID = 15;
+  
+    public static class PoseConstants {
+      public static final Pose2d TargetHubPose = alliance.get() == Alliance.Red ? new Pose2d(12,4, new Rotation2d()) : new Pose2d(4.6,4, new Rotation2d());
+  }
 
   public static class ControllerConstants {
     public static final int kDriverControllerPort = 0;
