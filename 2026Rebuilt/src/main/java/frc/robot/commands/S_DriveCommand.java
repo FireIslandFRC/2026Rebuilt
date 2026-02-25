@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -14,7 +15,7 @@ public class S_DriveCommand extends Command {
   private DoubleSupplier xSupplier, ySupplier, zSupplier;
   private BooleanSupplier fieldOriented;
   private double SpeedMultiplier;
-  private BooleanSupplier speedIncrease, speedDecrease;
+  private DoubleSupplier speedIncrease, speedDecrease;
   private int invert;
 
   /* * * CONSTRUCTOR * * */
@@ -25,7 +26,7 @@ public class S_DriveCommand extends Command {
    * @param zSupplier value input for rotation 
    * @param fieldOriented whether or not we want the bot to run in field oriented 
    */
-  public S_DriveCommand(SwerveSubsystem swerveSubs, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier zSupplier, BooleanSupplier fieldOriented, BooleanSupplier speedDecrease, BooleanSupplier speedIncrease) {
+  public S_DriveCommand(SwerveSubsystem swerveSubs, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier zSupplier, BooleanSupplier fieldOriented, DoubleSupplier speedDecrease, DoubleSupplier speedIncrease) {
     this.swerveSubs = swerveSubs; 
     this.xSupplier = xSupplier; 
     this.ySupplier = ySupplier; 
@@ -51,13 +52,10 @@ public class S_DriveCommand extends Command {
     double ySpeed = ySupplier.getAsDouble(); 
     double zSpeed = zSupplier.getAsDouble(); 
     boolean FieldOriented = fieldOriented.getAsBoolean();
-    boolean speedDecrease = this.speedDecrease.getAsBoolean();
-    boolean speedIncrease = this.speedIncrease.getAsBoolean();
-
-    // SmartDashboard.putNumber("x speed", xSpeed);
-    // SmartDashboard.putNumber("y speed", ySpeed);
-    // SmartDashboard.putNumber("z speed", zSpeed);
-
+    // double speedDecrease = this.speedDecrease.getAsDouble();
+    // double speedIncrease = this.speedIncrease.getAsDouble();
+    double speedDecrease = 1-this.speedDecrease.getAsDouble();
+    double speedIncrease = 1+this.speedIncrease.getAsDouble();
 
     //apply deadzone to speed values 
     xSpeed = deadzone(xSpeed); 
@@ -69,25 +67,18 @@ public class S_DriveCommand extends Command {
     } else {
       invert = 1;
     }
+    SmartDashboard.putNumber("speedDecrease", speedDecrease);
+    SmartDashboard.putNumber("speedIncrease", speedIncrease);
 
-    //square the speed values to make for smoother acceleration 
-
-    if (speedDecrease) { //CHECKME working
-      System.out.println("speedDecrease");
-      SpeedMultiplier = 0.03;
-    }else{
-      SpeedMultiplier = 1;
-    }
-
-    if (speedIncrease && !speedDecrease){
-      System.out.println("speedIncrease");
-      SpeedMultiplier = 1;
-    }else if(!speedDecrease){
-      SpeedMultiplier = 1;
-    }
+    SpeedMultiplier = speedDecrease*speedIncrease;
 
     /* * * SETTING SWERVE STATES * * */
     swerveSubs.drive(xSpeed * invert, ySpeed * invert, zSpeed * 0.72, !FieldOriented, SpeedMultiplier);
+
+    
+    SmartDashboard.putNumber("x speed", xSpeed * SpeedMultiplier);
+    SmartDashboard.putNumber("y speed", ySpeed * SpeedMultiplier);
+    SmartDashboard.putNumber("z speed", zSpeed);
     
   }
 

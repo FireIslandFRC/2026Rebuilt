@@ -24,8 +24,12 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.PoseConstants;;
 
@@ -58,7 +62,12 @@ public class CustomMathUtil {
         double currentRotation = robotPose.getRotation().getDegrees();
         double targetAngleRad = Math.atan2(yDist, xDist);
         double targetAngleDeg = Math.toDegrees(targetAngleRad);
-        double angleDifference = targetAngleDeg + currentRotation;
+        double angleDifference;
+        if (Constants.alliance.get() == Alliance.Blue){
+            angleDifference = targetAngleDeg + currentRotation;
+        }else{
+            angleDifference = targetAngleDeg + currentRotation - 180;
+        }
         System.out.println(angleDifference);
         return angleDifference;
     }
