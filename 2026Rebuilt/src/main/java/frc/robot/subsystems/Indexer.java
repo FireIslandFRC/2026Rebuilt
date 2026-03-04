@@ -30,18 +30,30 @@ public class Indexer extends SubsystemBase{
     }
 
     public void runCentralizer(){
-        centralizerLeft.set(.3);
+        centralizerLeft.set(-.1);
+        centralizerRight.set(-.1);
     }
 
     public void runCentralizer(double speed){
-        centralizerLeft.set(speed);
+        centralizerLeft.set(speed); 
+        centralizerRight.set(speed);
+    }
+
+    public void stopCentralizer(){
+        centralizerLeft.set(0); 
+        centralizerRight.set(0);
     }
 
     public void runSpindexer(){
-        spindexer.set(1);
+        spindexer.set(.2);
     }
 
     public void runSpindexer(double speed){
         spindexer.set(speed);
+    }
+
+    public void stopSpindexer(){
+        spindexer.set(0);
+
     }
 }

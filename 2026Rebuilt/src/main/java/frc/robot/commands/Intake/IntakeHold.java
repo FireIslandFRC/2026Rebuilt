@@ -26,14 +26,14 @@ public class IntakeHold extends Command {
   @Override
   public void execute() {
 
-    intakeSubs.intakeOut();
+    intakeSubs.intakeDown();
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubs.intakeIn();
+    intakeSubs.intakeUp();
   }
 
   // Returns true when the command should end.

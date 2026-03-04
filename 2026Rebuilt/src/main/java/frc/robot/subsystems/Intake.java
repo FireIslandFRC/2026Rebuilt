@@ -13,23 +13,23 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Configs;
  
 public class Intake extends SubsystemBase{
-    private SparkMax intakeMotorLeft;
-    private SparkMax intakeMotorRight;
+    private SparkFlex intakeMotorLeft;
+    private SparkFlex intakeMotorRight;
     private SparkFlex intakeMotor;
     private SparkClosedLoopController intakeMotorLeftController;
     private SparkClosedLoopController intakeMotorRightController;
 
     public Intake(){
-        intakeMotorLeft = new SparkMax(IntakeConstants.kIntakeArmL, MotorType.kBrushless);
-        intakeMotorRight = new SparkMax(IntakeConstants.kIntakeArmR, MotorType.kBrushless);
+        intakeMotorLeft = new SparkFlex(IntakeConstants.kIntakeArmL, MotorType.kBrushless);
+        intakeMotorRight = new SparkFlex(IntakeConstants.kIntakeArmR, MotorType.kBrushless);
         intakeMotor = new SparkFlex(IntakeConstants.kIntakeArmRollers, MotorType.kBrushless);
 
         intakeMotorLeftController = intakeMotorLeft.getClosedLoopController();
         intakeMotorRightController = intakeMotorRight.getClosedLoopController();
 
-        intakeMotorLeft.configure(Configs.SwerveModuleConfig.intakeConfigL, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        intakeMotorRight.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        intakeMotor.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
+        intakeMotorLeft.configure(Configs.SwerveModuleConfig.intakeConfigL, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        intakeMotorRight.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        intakeMotor.configure(Configs.SwerveModuleConfig.intakeConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
     }
 
     public void setAngle(double distance){
@@ -37,18 +37,31 @@ public class Intake extends SubsystemBase{
         System.out.println(distance);
     }
 
+    // public void intakeUp(){
+    //     intakeMotorLeftController.setSetpoint(-IntakeConstants.kIntakeUpPos, ControlType.kPosition);
+    //     intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeUpPos, ControlType.kPosition);
+    //     intakeMotor.set(0);
+    // }
+
+    // public void intakeDown(){
+    //     intakeMotorLeftController.setSetpoint(-IntakeConstants.kIntakeDownPos, ControlType.kPosition);
+    //     intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeDownPos, ControlType.kPosition);
+    //     intakeMotor.set(1);
+    // }
+
     public void intakeUp(){
-        intakeMotorLeftController.setSetpoint(IntakeConstants.kIntakeUpPos, ControlType.kPosition);
-        intakeMotor.set(0);
+        intakeMotorLeft.set(1);
+        intakeMotorRight.set(1);
     }
 
     public void intakeDown(){
-        intakeMotorLeftController.setSetpoint(IntakeConstants.kIntakeDownPos, ControlType.kPosition);
-        intakeMotor.set(.3);
+        intakeMotorLeft.set(-1);
+        intakeMotorRight.set(-1);
+
     }
 
     public void intakeIn(){
-        intakeMotor.set(.3);
+        intakeMotor.set(-1);
     }
 
     public void intakeOut(){
@@ -56,8 +69,6 @@ public class Intake extends SubsystemBase{
     }
 
     public void stop(){
-        intakeMotorLeft.set(0);
-        intakeMotorRight.set(0);
         intakeMotor.set(0);
     }
 
@@ -66,7 +77,11 @@ public class Intake extends SubsystemBase{
         intakeMotorRight.set(0);
     }
     
-    public double getIntakeAngle(){
-        return intakeMotorLeft.getEncoder().getPosition();    
+    public double getIntakeLAngle(){
+        return intakeMotorLeft.getEncoder().getPosition();
+    }
+
+    public double getIntakeRAngle(){
+        return intakeMotorRight.getEncoder().getPosition();
     }
 }

@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 
 import frc.robot.Configs;
+import frc.robot.Constants;
 import frc.robot.CustomMathUtil;
 import frc.robot.Vision;
  
@@ -27,18 +28,29 @@ public class Shooter extends SubsystemBase{
     private Servo pitchMotor;
     private Servo turretMotor;
     private SparkFlex flywheelMotorRotate;
+    private SparkMax rotationMotor;
     private SparkMax intake1;
     private SparkMax intake2;
     private PIDController shooterSpeedPID;
+    private SparkClosedLoopController flyWheelPID;
+    private SparkClosedLoopController rotationPID;
     private double angle;
 
 
     public Shooter(){
-        pitchMotor = new Servo(1);
-        turretMotor = new Servo(2);
-        flywheelMotorRotate = new SparkFlex(4, MotorType.kBrushless);
-        intake1 = new SparkMax(2, MotorType.kBrushless);
-        intake2 = new SparkMax(3, MotorType.kBrushless);
+        pitchMotor = new Servo(Constants.TurretConstants.kPitchServo);
+        // turretMotor = new Servo(Constants.TurretConstants.kRotationServo);
+        // turretMotor.set(0.4);
+        // intake1 = new SparkMax(2, MotorType.kBrushless);
+        // intake2 = new SparkMax(3, MotorType.kBrushless);
+
+        pitchMotor.set(0.06);
+
+        rotationMotor = new SparkMax(Constants.TurretConstants.kRotationMotor, MotorType.kBrushless);
+        // rotationMotor.configure(Configs.EEConfig.wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);        
+        rotationPID = rotationMotor.getClosedLoopController();
+        flywheelMotorRotate = new SparkFlex(Constants.TurretConstants.kFlywheel, MotorType.kBrushless);
+        flyWheelPID = flywheelMotorRotate.getClosedLoopController();
         shooterSpeedPID  = new PIDController(1,0,0);
     }
 
@@ -51,12 +63,19 @@ public class Shooter extends SubsystemBase{
     }
 
     public void angleUp(){
-        pitchMotor.set(pitchMotor.getPosition()+.01);
+        if (pitchMotor.getPosition() < .21){
+            pitchMotor.set(pitchMotor.getPosition()+.01);
+        }
     }
 
     public void angleDown(){
-        pitchMotor.set(pitchMotor.getPosition()-.01);
-        System.out.println("down");
+        if (pitchMotor.getPosition() > .05){
+            pitchMotor.set(pitchMotor.getPosition()-.01);
+        }
+    }
+
+    public void pitchZero(){
+        pitchMotor.set(0);
     }
 
     /********                    rotate                  *********/
@@ -65,20 +84,43 @@ public class Shooter extends SubsystemBase{
     }
 
     public void turretAngle(double wantedAngle){
-        turretMotor.set(-1*(((wantedAngle/360)*.22*3)+.5));
+        if (turretMotor.getPosition() > .3 && turretMotor.getPosition() < .7){
+            turretMotor.set(-1*(((wantedAngle/360)*.22*3)+.5));
+        }
+        // turretMotor.set(-1*(((wantedAngle/360)*.22*3)+.5));
         System.out.println(wantedAngle);
     }
 
     public void turretRight(){
-        turretMotor.set(turretMotor.getAngle() - .05);
+        rotationMotor.set(-.4);
+
+        // if (turretMotor.getPosition() > .3){
+        // if (turretMotor.getPosition() > .3 && turretMotor.getPosition() < .7){
+            // turretMotor.set(turretMotor.getPosition() - .05);
+            // System.out.println(turretMotor.getPosition());
+        // }
     }
 
     public void turretLeft(){
-        turretMotor.set(turretMotor.getAngle() + .05);
+        rotationMotor.set(.4);
+
+        // if (turretMotor.getPosition() > .3 && turretMotor.getPosition() < .7){
+        // if (turretMotor.getPosition() < .7){
+            // turretMotor.set(turretMotor.getPosition() + .05);
+            // System.out.println(turretMotor.getPosition());
+        // } 
+    }
+
+    public void turretStop(){
+        rotationMotor.stopMotor();
     }
 
     public double getTurretAngle(){
         return turretMotor.getPosition();
+    }
+
+    public double getPitchAngle(){
+        return pitchMotor.getPosition();
     }
 
     public void angleStop(){
@@ -87,21 +129,11 @@ public class Shooter extends SubsystemBase{
 
     /***************                    flywheel                   ****************/
     public void setShootingSpeed(double speed){
-        flywheelMotorRotate.set(speed);
+        flyWheelPID.setSetpoint(speed, ControlType.kDutyCycle);
     }
 
     public void stopFlywheel(){
         flywheelMotorRotate.set(0);
-    }
-
-    public void setIntake(){
-        intake1.set(1);
-        intake2.set(-1);
-    }
-
-    public void stopIntake(){
-        intake1.set(0);
-        intake2.set(0);
     }
 
 }

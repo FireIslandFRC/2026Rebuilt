@@ -9,6 +9,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.S_DriveCommand;
 import frc.robot.commands.Intake.IntakeDown;
 import frc.robot.commands.Intake.IntakeHold;
+import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.IntakeUp;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -16,6 +17,7 @@ import choreo.auto.AutoRoutine;
 import frc.robot.commands.Turret.TurretLeft;
 import frc.robot.commands.Turret.TurretRight;
 import frc.robot.commands.Turret.TurretToTarget;
+import frc.robot.commands.Indexer.RunCentralizer;
 import frc.robot.commands.Indexer.RunSpindexer;
 import frc.robot.commands.Intake.IntakeHold;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,7 +29,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -70,10 +75,20 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton turretLeft  = new JoystickButton(OP_CONTROLLER, 9);
   private final JoystickButton turretRight = new JoystickButton(OP_CONTROLLER, 10);
   private final JoystickButton flywheel    = new JoystickButton(OP_CONTROLLER, 3);
-  private final JoystickButton intake      = new JoystickButton(OP_CONTROLLER, 5);
+  private final JoystickButton intakeL      = new JoystickButton(OP_CONTROLLER, 5);
+  private final JoystickButton intakeR      = new JoystickButton(OP_CONTROLLER, 6);
 
   private final JoystickButton runToPosition = new JoystickButton(D_CONTROLLER, 1);
   private final JoystickButton spindexer     = new JoystickButton(OP_CONTROLLER, 2);
+
+  private final JoystickButton one       = new JoystickButton(OP_CONTROLLER, 1);
+  private final JoystickButton two       = new JoystickButton(OP_CONTROLLER, 2);
+  private final JoystickButton three       = new JoystickButton(OP_CONTROLLER, 3);
+  private final JoystickButton four       = new JoystickButton(OP_CONTROLLER, 4);
+  private final JoystickButton five       = new JoystickButton(OP_CONTROLLER, 5);
+  private final JoystickButton six       = new JoystickButton(OP_CONTROLLER, 6);
+  private final JoystickButton seven       = new JoystickButton(OP_CONTROLLER, 7);
+  private final JoystickButton eight       = new JoystickButton(OP_CONTROLLER, 8);
 
   public RobotContainer() {
 
@@ -110,27 +125,70 @@ public class RobotContainer extends SubsystemBase{
   }
 
   private void configureBindings() {
-    driveToScoreL.whileTrue(autos.MidLhoot().cmd());
-    driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
-    driveToScoreR.whileTrue(autos.MidRhoot().cmd());
-    driveToScoreRPOV.whileTrue(autos.MidRhoot().cmd());
+    // driveToScoreL.whileTrue(autos.MidLhoot().cmd());
+    // driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
+    // driveToScoreR.whileTrue(autos.MidRhoot().cmd());
+    // driveToScoreRPOV.whileTrue(autos.MidRhoot().cmd());
 
-    driveToMidR.whileTrue(autos.RightMid().cmd());
-    driveToMidL.whileTrue(autos.LeftMid().cmd());
+    // driveToMidR.whileTrue(autos.RightMid().cmd());
+    // driveToMidL.whileTrue(autos.LeftMid().cmd());
 
-    intake.whileTrue(new IntakeHold(intakeSubs));
+    // intakeL.whileTrue(new IntakeHold(intakeSubs));
 
-    turretLeft.whileTrue(new TurretLeft(shooter));
-    turretRight.whileTrue(new TurretRight(shooter));
+    // turretLeft.whileTrue(new TurretLeft(shooter));
+    // turretRight.whileTrue(new TurretRight(shooter));
 
-    resetGyro.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));
-    runToPosition.whileTrue(autos.moveFowardTele().cmd());
-    spindexer.whileTrue(new RunSpindexer(indexerSubs));
+    // resetGyro.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));
+    // runToPosition.whileTrue(autos.moveFowardTele().cmd());
+    // spindexer.whileTrue(new RunSpindexer(indexerSubs));
+
+    // shoot.onTrue(new InstantCommand(() -> indexerSubs.runSpindexer()).andThen(new InstantCommand(() -> indexerSubs.runCentralizer())).andThen(new InstantCommand(() -> shooter.setShootingSpeed(.5))));
+    // shoot.onFalse(new InstantCommand(() -> indexerSubs.runSpindexer(0)).andThen(new InstantCommand(() -> indexerSubs.runCentralizer(0))).andThen(new InstantCommand(() -> shooter.stopFlywheel())));
+    
+    intakeL.whileTrue(new InstantCommand(() -> intakeSubs.intakeUp()));
+    intakeR.whileTrue(new InstantCommand(() -> intakeSubs.intakeDown()));
+
+    // one.whileTrue(new InstantCommand(() -> intakeSubs.intakeIn()));
+    // one.whileFalse(new InstantCommand(() -> intakeSubs.stop()));
+
+    one.onTrue(new InstantCommand(() -> shooter.angleUp()));
+    two.onTrue(new InstantCommand(() -> shooter.angleDown()));
+
+    // six.onTrue(new InstantCommand(() -> shooter.angleZero()));
+
+    // five.onTrue(new InstantCommand(() -> shooter.turretLeft()));
+    // six.onTrue(new InstantCommand(() -> shooter.turretRight()));
+    
+    three.whileTrue(new SequentialCommandGroup(new InstantCommand(() -> shooter.setShootingSpeed(-.8)), new WaitCommand(2), new InstantCommand(() -> indexerSubs.runCentralizer(-.8))));
+    three.whileFalse(new InstantCommand(() -> indexerSubs.stopCentralizer()).andThen(new InstantCommand(() -> shooter.stopFlywheel())));
+
+    four.whileTrue(new RepeatCommand(new SequentialCommandGroup(new InstantCommand(() -> indexerSubs.runSpindexer(.15)), new WaitCommand(.2), new InstantCommand(() -> indexerSubs.runSpindexer(0)), new WaitCommand(.2))));
+    four.whileFalse(new InstantCommand(() -> indexerSubs.runSpindexer(0)));
+    // flywheel.whileFalse(new InstantCommand(() -> System.out.println(35676457)));
+    // flywheel.whileFalse(new InstantCommand(() -> intakeSubs.stop()));
+    
   }
     
   @Override
   public void periodic() {
-    vision.periodic();
+    // vision.periodic();
+    // System.out.println("Intake L Angle: " + intakeSubs.getIntakeLAngle());
+    // System.out.println("Intake R Angle: " + intakeSubs.getIntakeRAngle());
+    // System.out.println("Turret Angle: " + shooter.getTurretAngle());
+    // System.out.println("Pitch Angle: " + shooter.getPitchAngle());
+    if(!intakeL.getAsBoolean() && !intakeR.getAsBoolean()){
+      intakeSubs.stopArms();
+    }
+
+    if(!five.getAsBoolean() && !six.getAsBoolean()){
+      shooter.turretStop();
+    }
+    // if(!flywheel.getAsBoolean()){
+    //   indexerSubs.runCentralizer(0);
+    //   shooter.setShootingSpeed(0);
+    // }
+    // intakeSubs.intakeIn();
+
   }
 
 }

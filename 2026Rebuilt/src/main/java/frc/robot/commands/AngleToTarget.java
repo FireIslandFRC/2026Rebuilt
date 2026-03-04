@@ -8,11 +8,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.CustomMathUtil;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class angleDownTurret extends Command {
+public class AngleToTarget extends Command {
   private Shooter shooterSubs;
+  private CustomMathUtil customMathUtil;
+  private SwerveSubsystem swerveSubs;
 
   /* * * CONSTRUCTOR * * */
   /* 
@@ -22,8 +25,10 @@ public class angleDownTurret extends Command {
    * @param zSupplier value input for rotation 
    * @param fieldOriented whether or not we want the bot to run in field oriented 
    */
-  public angleDownTurret(Shooter shooterSubs) {
+  public AngleToTarget(Shooter shooterSubs, CustomMathUtil customMathUtil, SwerveSubsystem swerveSubs) {
     this.shooterSubs = shooterSubs; 
+    this.customMathUtil = customMathUtil;
+    this.swerveSubs = swerveSubs;
     addRequirements(shooterSubs);
   }
 
@@ -35,7 +40,7 @@ public class angleDownTurret extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubs.angleUp();
+    shooterSubs.setShootingAngle(customMathUtil.distanceToTarget(swerveSubs.getPose())*0.1);
   }
 
   // Called once the command ends or is interrupted.

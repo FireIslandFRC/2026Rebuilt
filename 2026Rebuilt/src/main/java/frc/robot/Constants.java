@@ -46,17 +46,19 @@ public class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kIntakeArmR = 12;
-    public static final int kIntakeArmL = 11;
-    public static final int kIntakeArmRollers = 13;
-    public static final int kIntakeUpPos = 0;
-    public static final int kIntakeDownPos = 0; //TODO: get encoder value
+    public static final int kIntakeArmR = 11;
+    public static final int kIntakeArmL = 12;
+    public static final int 
+    kIntakeArmRollers = 13;
+    public static final double kIntakeUpPos = 0.1;
+    public static final double kIntakeDownPos = 1; //TODO: get encoder value
   }
 
   public static class TurretConstants {
-    public static final int kRotationServo = 1;
+    // public static final int kRotationServo = 1;
     public static final int kPitchServo = 2;
     public static final int kFlywheel = 16;
+    public static final int kRotationMotor = 17; //FIXME
   }
 
   public static class IndexerConstants {

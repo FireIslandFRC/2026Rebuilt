@@ -1,20 +1,18 @@
 package frc.robot;
 
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.Intake;
 
 public final class Configs {
         public static final class SwerveModuleConfig {
                 public static final SparkFlexConfig drivingConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig turningConfig = new SparkFlexConfig();
                 
-                public static final SparkMaxConfig intakeConfigL = new SparkMaxConfig();
-                public static final SparkMaxConfig intakeConfigR = new SparkMaxConfig();
+                public static final SparkFlexConfig intakeConfigL = new SparkFlexConfig();
+                public static final SparkFlexConfig intakeConfigR = new SparkFlexConfig();
                 public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
 
                 public static final SparkFlexConfig indexerConfigL = new SparkFlexConfig();
@@ -35,8 +33,6 @@ public final class Configs {
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(20)
                                         .inverted(false); //NOTE: DONT FORGET
-
-                        
                         
                         indexerConfigL 
                                         .idleMode(IdleMode.kBrake)
@@ -46,17 +42,12 @@ public final class Configs {
                         indexerConfigR 
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(40)
-                                        .inverted(false)
-                                        .follow(IntakeConstants.kIntakeArmL);
+                                        .inverted(true);
 
                         spindexerConfig
-                                        .idleMode(IdleMode.kCoast)
+                                        .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(40)
-                                        .inverted(false);
-
-
-
-
+                                        .inverted(true);
 
                         intakeConfigL 
                                         .idleMode(IdleMode.kBrake)
@@ -66,8 +57,8 @@ public final class Configs {
                         intakeConfigR 
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(40)
-                                        .inverted(false)
-                                        .follow(IntakeConstants.kIntakeArmL);
+                                        .inverted(false);
+
                         intakeConfigL.closedLoop
                                         .pid(0.6, 0, 0);
 
