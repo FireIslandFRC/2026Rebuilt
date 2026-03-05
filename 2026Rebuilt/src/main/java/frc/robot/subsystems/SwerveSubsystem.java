@@ -27,6 +27,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotState;
@@ -62,9 +64,32 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
+  
+
 
   // swervesubsystem constructor
   public SwerveSubsystem() {
+
+//     SmartDashboard.putData("Swerve Drive", new Sendable() {
+//   @Override
+//   public void initSendable(SendableBuilder builder) {
+//     builder.setSmartDashboardType("SwerveDrive");
+
+//     builder.addDoubleProperty("Front Left Angle", () -> swerveModules[0].getState().angle.getRadians(), null);
+//     builder.addDoubleProperty("Front Left Velocity", () -> swerveModules[0].getState().speedMetersPerSecond, null);
+
+//     builder.addDoubleProperty("Front Right Angle", () -> swerveModules[2].getState().angle.getRadians(), null);
+//     builder.addDoubleProperty("Front Right Velocity", () -> swerveModules[2].getState().speedMetersPerSecond, null);
+
+//     builder.addDoubleProperty("Back Left Angle", () -> swerveModules[1].getState().angle.getRadians(), null);
+//     builder.addDoubleProperty("Back Left Velocity", () -> swerveModules[1].getState().speedMetersPerSecond, null);
+
+//     builder.addDoubleProperty("Back Right Angle", () -> swerveModules[3].getState().angle.getRadians(), null);
+//     builder.addDoubleProperty("Back Right Velocity", () -> swerveModules[3].getState().speedMetersPerSecond, null);
+
+//     builder.addDoubleProperty("Robot Angle", () -> getRotation2d().getRadians(), null);
+//   }
+// });
     
     pigeon.reset();
 
@@ -309,4 +334,6 @@ public class SwerveSubsystem extends SubsystemBase {
     m_field.setRobotPose(getPose());
     //SmartDashboard.putData(m_poseEstimator.getEstimatedPosition().);
   } 
+
+  
 }

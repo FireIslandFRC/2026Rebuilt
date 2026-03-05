@@ -32,7 +32,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
  * constants are needed, to reduce verbosity.
  */
 public class Constants {
-  static Optional<Alliance> alliance = DriverStation.getAlliance();
+  public static Optional<Alliance> alliance = Optional.empty();
+  static {
+    try {
+      alliance = DriverStation.getAlliance();
+    } catch (Exception e) {
+      // DriverStation may not be available at class-load time; keep default
+    }
+  }
   
     public static final int PhID = 15;
   
@@ -50,8 +57,9 @@ public class Constants {
     public static final int kIntakeArmL = 12;
     public static final int 
     kIntakeArmRollers = 13;
-    public static final double kIntakeUpPos = 0.1;
-    public static final double kIntakeDownPos = 1; //TODO: get encoder value
+    public static final double kIntakeUpPos = 0.05;
+    public static final double kIntakeDownPos = .4; //TODO: get encoder value
+    public static final double kIntakeStowedPos = 0.1;
   }
 
   public static class TurretConstants {

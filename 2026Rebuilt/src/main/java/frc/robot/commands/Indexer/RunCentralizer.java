@@ -16,7 +16,6 @@ public class RunCentralizer extends Command {
 
   public RunCentralizer(Indexer indexerSubs) {
     this.indexerSubs = indexerSubs;
-    addRequirements(indexerSubs);
   }
 
   // Called when the command is initially scheduled.
@@ -27,14 +26,14 @@ public class RunCentralizer extends Command {
   @Override
   public void execute() {
 
-    indexerSubs.runCentralizer();
+    // indexerSubs.runCentralizer();
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    indexerSubs.runCentralizer(0);
+    // indexerSubs.runCentralizer(0);
   }
 
   // Returns true when the command should end.

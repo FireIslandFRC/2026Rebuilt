@@ -16,7 +16,6 @@ public class RunSpindexer extends Command {
 
   public RunSpindexer(Indexer indexerSubs) {
     this.indexerSubs = indexerSubs;
-    addRequirements(indexerSubs);
   }
 
   // Called when the command is initially scheduled.
@@ -27,14 +26,14 @@ public class RunSpindexer extends Command {
   @Override
   public void execute() {
 
-    indexerSubs.runSpindexer();
+    // indexerSubs.runSpindexer();
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    indexerSubs.runSpindexer(0);
+    // indexerSubs.runSpindexer(0);
   }
 
   // Returns true when the command should end.

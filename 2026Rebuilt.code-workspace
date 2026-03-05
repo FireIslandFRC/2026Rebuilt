@@ -97,6 +97,7 @@
 			"swervesubsystem",
 			"Tele",
 			"teleop"
-		]
+		],
+		"java.debug.settings.onBuildFailureProceed": true
 	}
 }

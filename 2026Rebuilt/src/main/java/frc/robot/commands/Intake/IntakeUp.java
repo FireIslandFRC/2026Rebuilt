@@ -26,7 +26,7 @@ public class IntakeUp extends Command {
   @Override
   public void execute() {
 
-    intakeSubs.intakeUp();
+    // intakeSubs.intakeUp();
     
   }
 

@@ -25,115 +25,103 @@ import frc.robot.Vision;
  
 public class Shooter extends SubsystemBase{
 
-    private Servo pitchMotor;
-    private Servo turretMotor;
-    private SparkFlex flywheelMotorRotate;
-    private SparkMax rotationMotor;
-    private SparkMax intake1;
-    private SparkMax intake2;
-    private PIDController shooterSpeedPID;
-    private SparkClosedLoopController flyWheelPID;
+    private Servo pitchServo;
+    private SparkFlex flywheel;
+    private SparkMax rotation;
+    private SparkClosedLoopController flywheelPID;
     private SparkClosedLoopController rotationPID;
-    private double angle;
-
 
     public Shooter(){
-        pitchMotor = new Servo(Constants.TurretConstants.kPitchServo);
-        // turretMotor = new Servo(Constants.TurretConstants.kRotationServo);
-        // turretMotor.set(0.4);
-        // intake1 = new SparkMax(2, MotorType.kBrushless);
-        // intake2 = new SparkMax(3, MotorType.kBrushless);
+        pitchServo = new Servo(Constants.TurretConstants.kPitchServo);
 
-        pitchMotor.set(0.06);
+        pitchServo.set(0.06);
 
-        rotationMotor = new SparkMax(Constants.TurretConstants.kRotationMotor, MotorType.kBrushless);
-        // rotationMotor.configure(Configs.EEConfig.wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);        
-        rotationPID = rotationMotor.getClosedLoopController();
-        flywheelMotorRotate = new SparkFlex(Constants.TurretConstants.kFlywheel, MotorType.kBrushless);
-        flyWheelPID = flywheelMotorRotate.getClosedLoopController();
-        shooterSpeedPID  = new PIDController(1,0,0);
+        rotation = new SparkMax(Constants.TurretConstants.kRotationMotor, MotorType.kBrushless);
+        flywheel= new SparkFlex(Constants.TurretConstants.kFlywheel, MotorType.kBrushless);
+        
+        flywheel.configure(Configs.TurretConfig.flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);        
+        rotation.configure(Configs.TurretConfig.rotationConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);        
+        
+        rotationPID = rotation.getClosedLoopController();
+        flywheelPID = flywheel.getClosedLoopController();
     }
 
 
     /****                   angles                **********/
     public void setShootingAngle(double angle){
 
-        pitchMotor.set(angle);
-        System.out.println(angle);
+        pitchServo.set(angle);
+        
     }
 
-    public void angleUp(){
-        if (pitchMotor.getPosition() < .21){
-            pitchMotor.set(pitchMotor.getPosition()+.01);
+    public void setAngleUp(){
+
+        if (pitchServo.getPosition() < .21){
+            pitchServo.set(pitchServo.getPosition()+.01);
         }
+
     }
 
-    public void angleDown(){
-        if (pitchMotor.getPosition() > .05){
-            pitchMotor.set(pitchMotor.getPosition()-.01);
+    public void setAngleDown(){
+
+        if (pitchServo.getPosition() > .05){
+            pitchServo.set(pitchServo.getPosition()-.01);
         }
+
     }
 
-    public void pitchZero(){
-        pitchMotor.set(0);
+    public void setPitchZero()
+    {
+        pitchServo.set(0);
+
     }
 
     /********                    rotate                  *********/
-    public void angleZero(){
-        turretMotor.set(.5);
+    public void setRotationZero(){
+        
+        rotation.getEncoder().setPosition(0);
+
     }
 
     public void turretAngle(double wantedAngle){
-        if (turretMotor.getPosition() > .3 && turretMotor.getPosition() < .7){
-            turretMotor.set(-1*(((wantedAngle/360)*.22*3)+.5));
+
+        if (rotation.getEncoder().getPosition() > -.4 && rotation.getEncoder().getPosition() < .4){
+            rotationPID.setSetpoint(wantedAngle, ControlType.kPosition);
         }
-        // turretMotor.set(-1*(((wantedAngle/360)*.22*3)+.5));
-        System.out.println(wantedAngle);
+
     }
 
-    public void turretRight(){
-        rotationMotor.set(-.4);
+    public void setTurretRight(){
 
-        // if (turretMotor.getPosition() > .3){
-        // if (turretMotor.getPosition() > .3 && turretMotor.getPosition() < .7){
-            // turretMotor.set(turretMotor.getPosition() - .05);
-            // System.out.println(turretMotor.getPosition());
-        // }
+        rotation.set(-.4);
+
     }
 
-    public void turretLeft(){
-        rotationMotor.set(.4);
+    public void setTurretLeft(){
 
-        // if (turretMotor.getPosition() > .3 && turretMotor.getPosition() < .7){
-        // if (turretMotor.getPosition() < .7){
-            // turretMotor.set(turretMotor.getPosition() + .05);
-            // System.out.println(turretMotor.getPosition());
-        // } 
+        rotation.set(.4);
+
     }
 
-    public void turretStop(){
-        rotationMotor.stopMotor();
+    public void stopTurret(){
+        rotation.stopMotor();
     }
 
     public double getTurretAngle(){
-        return turretMotor.getPosition();
+        return rotation.getEncoder().getPosition();
     }
 
     public double getPitchAngle(){
-        return pitchMotor.getPosition();
-    }
-
-    public void angleStop(){
-       // pitchMotor.set(0);
+        return pitchServo.getPosition();
     }
 
     /***************                    flywheel                   ****************/
     public void setShootingSpeed(double speed){
-        flyWheelPID.setSetpoint(speed, ControlType.kDutyCycle);
+        flywheelPID.setSetpoint(speed, ControlType.kDutyCycle);
     }
 
     public void stopFlywheel(){
-        flywheelMotorRotate.set(0);
+        flywheel.set(0);
     }
 
 }

@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -59,14 +60,21 @@ public class CustomMathUtil {
     public double turretAngleToTarget(Pose2d robotPose) {
         double xDist = PoseConstants.TargetHubPose.getX() - robotPose.getX(); // Assuming target is at (8, 8)
         double yDist = PoseConstants.TargetHubPose.getY() - robotPose.getY();
-        double currentRotation = robotPose.getRotation().getDegrees();
+        
         double targetAngleRad = Math.atan2(yDist, xDist);
         double targetAngleDeg = Math.toDegrees(targetAngleRad);
         double angleDifference;
+        double currentRotation = robotPose.getRotation().getDegrees();
         if (Constants.alliance.get() == Alliance.Blue){
-            angleDifference = targetAngleDeg + currentRotation;
+            angleDifference = targetAngleDeg - currentRotation;
         }else{
             angleDifference = targetAngleDeg + currentRotation - 180;
+        }
+        
+        if (angleDifference >= 180){
+            angleDifference = angleDifference - 360;
+        }else if(angleDifference <= -180){
+            angleDifference = angleDifference + 360;
         }
         System.out.println(angleDifference);
         return angleDifference;

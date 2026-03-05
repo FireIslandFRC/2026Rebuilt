@@ -6,6 +6,9 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotStates;
+import frc.robot.RobotStates.CentralizerState;
+import frc.robot.RobotStates.SpindexerState;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -21,22 +24,27 @@ public class Index extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    RobotStates.setCentralizerState(CentralizerState.ON);
+    RobotStates.setSpindexerState(SpindexerState.ON);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    indexerSubs.runSpindexer();
-    indexerSubs.runCentralizer();
+    indexerSubs.setSpindexer();
+    indexerSubs.setCentralizer();
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    indexerSubs.runSpindexer(0);
-    indexerSubs.runCentralizer(0);
+    indexerSubs.stopCentralizer();
+    indexerSubs.stopSpindexer();
+    RobotStates.setCentralizerState(CentralizerState.OFF);
+    RobotStates.setSpindexerState(SpindexerState.OFF);
   }
 
   // Returns true when the command should end.

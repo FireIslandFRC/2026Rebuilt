@@ -24,17 +24,17 @@ public class Indexer extends SubsystemBase{
         centralizerRight = new SparkFlex(IndexerConstants.kCentralizerR, MotorType.kBrushless);
         spindexer = new SparkFlex(IndexerConstants.KSpindexer, MotorType.kBrushless);
 
-        centralizerLeft.configure(Configs.SwerveModuleConfig.indexerConfigL, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        centralizerRight.configure(Configs.SwerveModuleConfig.indexerConfigR, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        spindexer.configure(Configs.SwerveModuleConfig.spindexerConfig, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
+        centralizerLeft.configure(Configs.IndexerConfig.indexerConfigL, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        centralizerRight.configure(Configs.IndexerConfig.indexerConfigR, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        spindexer.configure(Configs.IndexerConfig.spindexerConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
     }
 
-    public void runCentralizer(){
-        centralizerLeft.set(-.1);
-        centralizerRight.set(-.1);
+    public void setCentralizer(){
+        centralizerLeft.set(.8);
+        centralizerRight.set(.8);
     }
 
-    public void runCentralizer(double speed){
+    public void setCentralizer(double speed){
         centralizerLeft.set(speed); 
         centralizerRight.set(speed);
     }
@@ -44,16 +44,15 @@ public class Indexer extends SubsystemBase{
         centralizerRight.set(0);
     }
 
-    public void runSpindexer(){
+    public void setSpindexer(){
         spindexer.set(.2);
     }
 
-    public void runSpindexer(double speed){
+    public void setSpindexer(double speed){
         spindexer.set(speed);
     }
 
     public void stopSpindexer(){
         spindexer.set(0);
-
     }
 }

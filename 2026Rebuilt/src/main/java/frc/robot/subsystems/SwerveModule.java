@@ -61,9 +61,9 @@ public class SwerveModule {
         rotationMotor = new SparkFlex(moduleConstants.rotationMotorID, MotorType.kBrushless);
         absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
 
-        driveMotor.configure(Configs.SwerveModuleConfig.drivingConfig, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        driveMotor.configure(Configs.SwerveConfig.drivingConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
 
-        rotationMotor.configure(Configs.SwerveModuleConfig.turningConfig, ResetMode.kNoResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        rotationMotor.configure(Configs.SwerveConfig.turningConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
 
         /* * * ABSOLUTE ENCODER CONFIG * * */
         // abs enc is now +-180

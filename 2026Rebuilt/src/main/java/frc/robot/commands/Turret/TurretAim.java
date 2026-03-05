@@ -9,10 +9,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CustomMathUtil;
+import frc.robot.RobotStates;
+import frc.robot.RobotStates.TurretState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class TurretToTarget extends Command {
+public class TurretAim extends Command {
   private Shooter shooterSubs; 
   private CustomMathUtil customMathUtil;
   private SwerveSubsystem swerveSubs;
@@ -25,7 +27,7 @@ public class TurretToTarget extends Command {
    * @param zSupplier value input for rotation 
    * @param fieldOriented whether or not we want the bot to run in field oriented 
    */
-  public TurretToTarget(Shooter shooterSubs, CustomMathUtil customMathUtil, SwerveSubsystem swerveSubs) {
+  public TurretAim(Shooter shooterSubs, CustomMathUtil customMathUtil, SwerveSubsystem swerveSubs) {
     this.shooterSubs = shooterSubs; 
     this.customMathUtil = customMathUtil;
     this.swerveSubs = swerveSubs;
@@ -35,13 +37,23 @@ public class TurretToTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (RobotStates.getTurretState() == TurretState.OFF){
+      RobotStates.setTurretState(TurretState.AIMING);
+    }else{
+      RobotStates.setTurretState(TurretState.OFF);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double neededAngle = customMathUtil.turretAngleToTarget(swerveSubs.getPose());
-    shooterSubs.turretAngle(neededAngle);
+    if (RobotStates.getTurretState() == TurretState.AIMING){
+      double neededAngle = customMathUtil.turretAngleToTarget(swerveSubs.getPose());
+      shooterSubs.turretAngle(neededAngle);
+    }else{
+      shooterSubs.stopTurret();
+      end(false);
+    }
   }
 
   // Called once the command ends or is interrupted.

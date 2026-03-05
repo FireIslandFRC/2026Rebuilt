@@ -15,61 +15,69 @@ import frc.robot.Configs;
 public class Intake extends SubsystemBase{
     private SparkFlex intakeMotorLeft;
     private SparkFlex intakeMotorRight;
-    private SparkFlex intakeMotor;
+    private SparkFlex intakeRoller;
     private SparkClosedLoopController intakeMotorLeftController;
     private SparkClosedLoopController intakeMotorRightController;
 
     public Intake(){
         intakeMotorLeft = new SparkFlex(IntakeConstants.kIntakeArmL, MotorType.kBrushless);
         intakeMotorRight = new SparkFlex(IntakeConstants.kIntakeArmR, MotorType.kBrushless);
-        intakeMotor = new SparkFlex(IntakeConstants.kIntakeArmRollers, MotorType.kBrushless);
+        intakeRoller = new SparkFlex(IntakeConstants.kIntakeArmRollers, MotorType.kBrushless);
 
         intakeMotorLeftController = intakeMotorLeft.getClosedLoopController();
         intakeMotorRightController = intakeMotorRight.getClosedLoopController();
 
-        intakeMotorLeft.configure(Configs.SwerveModuleConfig.intakeConfigL, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        intakeMotorRight.configure(Configs.SwerveModuleConfig.intakeConfigR, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        intakeMotor.configure(Configs.SwerveModuleConfig.intakeConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
+        intakeMotorLeft.configure(Configs.IntakeConfig.intakeConfigL, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        intakeMotorRight.configure(Configs.IntakeConfig.intakeConfigR, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        intakeRoller.configure(Configs.IntakeConfig.intakeRollersConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
     }
 
     public void setAngle(double distance){
-        //pitchPosition.setSetpoint(distance, ControlType.kPosition);
+
+        intakeMotorLeftController.setSetpoint(distance, ControlType.kPosition);
+        intakeMotorRightController.setSetpoint(distance, ControlType.kPosition);
         System.out.println(distance);
-    }
-
-    // public void intakeUp(){
-    //     intakeMotorLeftController.setSetpoint(-IntakeConstants.kIntakeUpPos, ControlType.kPosition);
-    //     intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeUpPos, ControlType.kPosition);
-    //     intakeMotor.set(0);
-    // }
-
-    // public void intakeDown(){
-    //     intakeMotorLeftController.setSetpoint(-IntakeConstants.kIntakeDownPos, ControlType.kPosition);
-    //     intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeDownPos, ControlType.kPosition);
-    //     intakeMotor.set(1);
-    // }
-
-    public void intakeUp(){
-        intakeMotorLeft.set(1);
-        intakeMotorRight.set(1);
-    }
-
-    public void intakeDown(){
-        intakeMotorLeft.set(-1);
-        intakeMotorRight.set(-1);
 
     }
 
-    public void intakeIn(){
-        intakeMotor.set(-1);
+    public void setIntakeUp(){
+        intakeMotorLeftController.setSetpoint(IntakeConstants.kIntakeUpPos, ControlType.kPosition);
+        intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeUpPos, ControlType.kPosition);
     }
 
-    public void intakeOut(){
-        intakeMotor.set(-.3);
+    public void setIntakeDown(){
+        intakeMotorLeftController.setSetpoint(IntakeConstants.kIntakeDownPos, ControlType.kPosition);
+        intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeDownPos, ControlType.kPosition);
     }
 
-    public void stop(){
-        intakeMotor.set(0);
+    public void setIntakeUp(double speed){
+        intakeMotorLeft.set(speed);
+        intakeMotorRight.set(speed);
+    }
+
+    public void setIntakeDown(double speed){
+        intakeMotorLeft.set(-speed);
+        intakeMotorRight.set(-speed);
+    }
+
+    public void setIntakeIn(){
+        intakeRoller.set(1);
+    }
+    
+    public void setIntakeIn(double speed){
+        intakeRoller.set(speed);
+    }
+
+    public void setintakeOut(){
+        intakeRoller.set(-.3);
+    }
+
+    public void setintakeOut(double speed){
+        intakeRoller.set(-speed);
+    }
+
+    public void stopRollers(){
+        intakeRoller.set(0);
     }
 
     public void stopArms(){

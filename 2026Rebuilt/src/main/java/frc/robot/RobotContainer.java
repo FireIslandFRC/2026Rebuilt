@@ -7,8 +7,10 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.Autos;
 import frc.robot.commands.S_DriveCommand;
+import frc.robot.commands.angleDownTurret;
+import frc.robot.commands.angleUpTurret;
 import frc.robot.commands.Intake.IntakeDown;
-import frc.robot.commands.Intake.IntakeHold;
+import frc.robot.commands.Intake.IntakeToggle;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.IntakeUp;
 import choreo.auto.AutoChooser;
@@ -16,12 +18,15 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import frc.robot.commands.Turret.TurretLeft;
 import frc.robot.commands.Turret.TurretRight;
-import frc.robot.commands.Turret.TurretToTarget;
+import frc.robot.commands.Turret.TurretAim;
 import frc.robot.commands.Indexer.RunCentralizer;
 import frc.robot.commands.Indexer.RunSpindexer;
-import frc.robot.commands.Intake.IntakeHold;
+import frc.robot.commands.Intake.IntakeToggle;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS5Controller.Axis;
@@ -39,7 +44,6 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Intake;
 import frc.robot.Vision;
-import frc.robot.Configs.SwerveModuleConfig;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer extends SubsystemBase{
@@ -56,6 +60,7 @@ public class RobotContainer extends SubsystemBase{
   //Joystick setting
   public final static XboxController D_CONTROLLER  = new XboxController(ControllerConstants.kDriverControllerPort);
   public final static XboxController OP_CONTROLLER = new XboxController(ControllerConstants.kOperatorControllerPort);
+  public final static XboxController TEST          = new XboxController(5);
   //DRIVE BUTTONS     
   private final double speedSlow              = D_CONTROLLER.getLeftTriggerAxis();
   private final double speedFast              = D_CONTROLLER.getRightTriggerAxis();
@@ -70,27 +75,39 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton driveToMidL    = new JoystickButton(D_CONTROLLER, 2);
   private final JoystickButton driveToClimb   = new JoystickButton(D_CONTROLLER, 4);
 
-  private final JoystickButton shoot       = new JoystickButton(OP_CONTROLLER, 1);
-  private final JoystickButton shootSimple = new JoystickButton(OP_CONTROLLER, 4);
-  private final JoystickButton turretLeft  = new JoystickButton(OP_CONTROLLER, 9);
-  private final JoystickButton turretRight = new JoystickButton(OP_CONTROLLER, 10);
-  private final JoystickButton flywheel    = new JoystickButton(OP_CONTROLLER, 3);
+  private final JoystickButton shoot        = new JoystickButton(OP_CONTROLLER, 1);
+  private final JoystickButton shootSimple  = new JoystickButton(OP_CONTROLLER, 4);
+  private final JoystickButton turretLeft   = new JoystickButton(OP_CONTROLLER, 9);
+  private final JoystickButton turretRight  = new JoystickButton(OP_CONTROLLER, 10);
+  private final JoystickButton flywheel     = new JoystickButton(OP_CONTROLLER, 3);
   private final JoystickButton intakeL      = new JoystickButton(OP_CONTROLLER, 5);
   private final JoystickButton intakeR      = new JoystickButton(OP_CONTROLLER, 6);
 
   private final JoystickButton runToPosition = new JoystickButton(D_CONTROLLER, 1);
   private final JoystickButton spindexer     = new JoystickButton(OP_CONTROLLER, 2);
 
-  private final JoystickButton one       = new JoystickButton(OP_CONTROLLER, 1);
-  private final JoystickButton two       = new JoystickButton(OP_CONTROLLER, 2);
-  private final JoystickButton three       = new JoystickButton(OP_CONTROLLER, 3);
-  private final JoystickButton four       = new JoystickButton(OP_CONTROLLER, 4);
-  private final JoystickButton five       = new JoystickButton(OP_CONTROLLER, 5);
-  private final JoystickButton six       = new JoystickButton(OP_CONTROLLER, 6);
-  private final JoystickButton seven       = new JoystickButton(OP_CONTROLLER, 7);
-  private final JoystickButton eight       = new JoystickButton(OP_CONTROLLER, 8);
+  private final JoystickButton one       = new JoystickButton(TEST, 1);
+  private final JoystickButton two       = new JoystickButton(TEST, 2);
+  private final JoystickButton three       = new JoystickButton(TEST, 3);
+  private final JoystickButton four       = new JoystickButton(TEST, 4);
+  private final JoystickButton five       = new JoystickButton(TEST, 5);
+  private final JoystickButton six       = new JoystickButton(TEST, 6);
+  private final JoystickButton seven       = new JoystickButton(TEST, 7);
+  private final JoystickButton eight       = new JoystickButton(TEST, 8);
+  private final JoystickButton nine       = new JoystickButton(TEST, 9);
 
   public RobotContainer() {
+
+     SmartDashboard.putData("Command", new Sendable() {
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("RunCommand");
+
+    builder.setActuator(true);
+    builder.addBooleanProperty("boolean", () -> false, null);
+
+  }
+});
 
     autoChooser = new AutoChooser();
 
@@ -124,49 +141,39 @@ public class RobotContainer extends SubsystemBase{
 
   }
 
+  
+
   private void configureBindings() {
-    // driveToScoreL.whileTrue(autos.MidLhoot().cmd());
-    // driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
-    // driveToScoreR.whileTrue(autos.MidRhoot().cmd());
-    // driveToScoreRPOV.whileTrue(autos.MidRhoot().cmd());
+    driveToScoreL.whileTrue(autos.MidLhoot().cmd());
+    driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
+    driveToScoreR.whileTrue(autos.MidRhoot().cmd());
+    driveToScoreRPOV.whileTrue(autos.MidRhoot().cmd());
 
-    // driveToMidR.whileTrue(autos.RightMid().cmd());
-    // driveToMidL.whileTrue(autos.LeftMid().cmd());
+    driveToMidR.whileTrue(autos.RightMid().cmd());
+    driveToMidL.whileTrue(autos.LeftMid().cmd());
 
-    // intakeL.whileTrue(new IntakeHold(intakeSubs));
+    intakeL.whileTrue(new IntakeToggle(intakeSubs));
 
-    // turretLeft.whileTrue(new TurretLeft(shooter));
-    // turretRight.whileTrue(new TurretRight(shooter));
+    resetGyro.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));
+    runToPosition.whileTrue(autos.moveFowardTele().cmd());
 
-    // resetGyro.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));
-    // runToPosition.whileTrue(autos.moveFowardTele().cmd());
-    // spindexer.whileTrue(new RunSpindexer(indexerSubs));
-
-    // shoot.onTrue(new InstantCommand(() -> indexerSubs.runSpindexer()).andThen(new InstantCommand(() -> indexerSubs.runCentralizer())).andThen(new InstantCommand(() -> shooter.setShootingSpeed(.5))));
-    // shoot.onFalse(new InstantCommand(() -> indexerSubs.runSpindexer(0)).andThen(new InstantCommand(() -> indexerSubs.runCentralizer(0))).andThen(new InstantCommand(() -> shooter.stopFlywheel())));
+    spindexer.whileTrue(new RunSpindexer(indexerSubs));
     
-    intakeL.whileTrue(new InstantCommand(() -> intakeSubs.intakeUp()));
-    intakeR.whileTrue(new InstantCommand(() -> intakeSubs.intakeDown()));
-
-    // one.whileTrue(new InstantCommand(() -> intakeSubs.intakeIn()));
-    // one.whileFalse(new InstantCommand(() -> intakeSubs.stop()));
-
-    one.onTrue(new InstantCommand(() -> shooter.angleUp()));
-    two.onTrue(new InstantCommand(() -> shooter.angleDown()));
-
-    // six.onTrue(new InstantCommand(() -> shooter.angleZero()));
-
-    // five.onTrue(new InstantCommand(() -> shooter.turretLeft()));
-    // six.onTrue(new InstantCommand(() -> shooter.turretRight()));
     
-    three.whileTrue(new SequentialCommandGroup(new InstantCommand(() -> shooter.setShootingSpeed(-.8)), new WaitCommand(2), new InstantCommand(() -> indexerSubs.runCentralizer(-.8))));
-    three.whileFalse(new InstantCommand(() -> indexerSubs.stopCentralizer()).andThen(new InstantCommand(() -> shooter.stopFlywheel())));
 
-    four.whileTrue(new RepeatCommand(new SequentialCommandGroup(new InstantCommand(() -> indexerSubs.runSpindexer(.15)), new WaitCommand(.2), new InstantCommand(() -> indexerSubs.runSpindexer(0)), new WaitCommand(.2))));
-    four.whileFalse(new InstantCommand(() -> indexerSubs.runSpindexer(0)));
-    // flywheel.whileFalse(new InstantCommand(() -> System.out.println(35676457)));
-    // flywheel.whileFalse(new InstantCommand(() -> intakeSubs.stop()));
-    
+    one.whileTrue(new angleUpTurret(shooter));
+    two.whileTrue(new angleDownTurret(shooter));
+
+    three.whileTrue(new TurretLeft(shooter));
+    four.whileTrue(new TurretRight(shooter));
+
+    five.whileTrue(new IntakeDown(intakeSubs));
+    six.whileTrue(new IntakeUp(intakeSubs));
+
+    seven.whileTrue(new RunSpindexer(indexerSubs));
+    eight.whileTrue(new RunCentralizer(indexerSubs));
+    nine.whileTrue(new InstantCommand(() -> shooter.setShootingSpeed(.1)));
+
   }
     
   @Override
@@ -176,18 +183,20 @@ public class RobotContainer extends SubsystemBase{
     // System.out.println("Intake R Angle: " + intakeSubs.getIntakeRAngle());
     // System.out.println("Turret Angle: " + shooter.getTurretAngle());
     // System.out.println("Pitch Angle: " + shooter.getPitchAngle());
-    if(!intakeL.getAsBoolean() && !intakeR.getAsBoolean()){
-      intakeSubs.stopArms();
-    }
+    // if(!intakeL.getAsBoolean() && !intakeR.getAsBoolean()){
+    //   intakeSubs.stopArms();
+    // }
 
-    if(!five.getAsBoolean() && !six.getAsBoolean()){
-      shooter.turretStop();
-    }
-    // if(!flywheel.getAsBoolean()){
+    // if(!five.getAsBoolean() && !six.getAsBoolean()){
+    //   shooter.turretStop();
+    // }
+    // // if(!flywheel.getAsBoolean()){
     //   indexerSubs.runCentralizer(0);
     //   shooter.setShootingSpeed(0);
     // }
     // intakeSubs.intakeIn();
+
+    customMathUtil.turretAngleToTarget(new Pose2d(15,2, new Rotation2d(Units.degreesToRadians(0))));
 
   }
 
