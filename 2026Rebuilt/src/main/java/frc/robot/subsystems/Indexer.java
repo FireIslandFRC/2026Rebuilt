@@ -18,6 +18,8 @@ public class Indexer extends SubsystemBase{
     private SparkFlex centralizerLeft;
     private SparkFlex centralizerRight;
     private SparkFlex spindexer;
+    private SparkClosedLoopController centralizerLeftPID;
+    private SparkClosedLoopController centralizerRightPID;
 
     public Indexer(){
         centralizerLeft = new SparkFlex(IndexerConstants.kCentralizerL, MotorType.kBrushless);
@@ -27,7 +29,12 @@ public class Indexer extends SubsystemBase{
         centralizerLeft.configure(Configs.IndexerConfig.indexerConfigL, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
         centralizerRight.configure(Configs.IndexerConfig.indexerConfigR, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
         spindexer.configure(Configs.IndexerConfig.spindexerConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
+        
+        centralizerLeftPID = centralizerLeft.getClosedLoopController();
+        centralizerRightPID = centralizerRight.getClosedLoopController();
+    
     }
+    
 
     public void setCentralizer(){
         centralizerLeft.set(.8);
@@ -35,8 +42,11 @@ public class Indexer extends SubsystemBase{
     }
 
     public void setCentralizer(double speed){
-        centralizerLeft.set(speed); 
-        centralizerRight.set(speed);
+        // centralizerLeft.set(speed); 
+        // centralizerRight.set(speed);
+
+        centralizerLeftPID.setSetpoint(speed * .75, ControlType.kDutyCycle);
+        centralizerRightPID.setSetpoint(speed, ControlType.kDutyCycle);
     }
 
     public void stopCentralizer(){
@@ -45,7 +55,7 @@ public class Indexer extends SubsystemBase{
     }
 
     public void setSpindexer(){
-        spindexer.set(.2);
+        spindexer.set(.1);
     }
 
     public void setSpindexer(double speed){

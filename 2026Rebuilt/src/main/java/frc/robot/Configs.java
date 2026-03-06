@@ -40,12 +40,12 @@ public final class Configs {
                         intakeConfigL 
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(40)
-                                        .inverted(false);
+                                        .inverted(true);
 
                         intakeConfigR 
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(40)
-                                        .inverted(true);
+                                        .inverted(false);
 
 
                         intakeConfigL.closedLoop

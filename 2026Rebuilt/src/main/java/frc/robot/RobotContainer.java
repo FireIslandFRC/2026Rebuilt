@@ -159,21 +159,23 @@ public class RobotContainer extends SubsystemBase{
 
     spindexer.whileTrue(new RunSpindexer(indexerSubs));
     
-    
-
     one.whileTrue(new angleUpTurret(shooter));
     two.whileTrue(new angleDownTurret(shooter));
 
     three.whileTrue(new TurretLeft(shooter));
     four.whileTrue(new TurretRight(shooter));
 
+    // one.whileTrue(new IntakeIn(intakeSubs));
+    
+
     five.whileTrue(new IntakeDown(intakeSubs));
     six.whileTrue(new IntakeUp(intakeSubs));
 
-    seven.whileTrue(new RunSpindexer(indexerSubs));
-    eight.whileTrue(new RunCentralizer(indexerSubs));
-    nine.whileTrue(new InstantCommand(() -> shooter.setShootingSpeed(.1)));
+    eight.whileTrue(new SequentialCommandGroup(new InstantCommand(() -> indexerSubs.setCentralizer(0.3)), new InstantCommand(() -> shooter.setShootingSpeed(.55)), new InstantCommand(() -> indexerSubs.setSpindexer(-0.2)),  new WaitCommand(.6), new InstantCommand(() -> indexerSubs.setCentralizer(-.6)), new WaitCommand(.5), new RunSpindexer(indexerSubs)));
+    eight.whileFalse(new InstantCommand(() -> shooter.setShootingSpeed(0)));
+    eight.whileFalse(new InstantCommand(() -> indexerSubs.setCentralizer(0)));
 
+    seven.whileTrue(new RunCentralizer(indexerSubs));
   }
     
   @Override
@@ -196,7 +198,9 @@ public class RobotContainer extends SubsystemBase{
     // }
     // intakeSubs.intakeIn();
 
-    customMathUtil.turretAngleToTarget(new Pose2d(15,2, new Rotation2d(Units.degreesToRadians(0))));
+    // customMathUtil.turretAngleToTarget(new Pose2d(15,2, new Rotation2d(Units.degreesToRadians(0))));
+    // System.out.println("TurretAngle" + shooter.getTurretAn
+    // System.out.println("IntakeAngle  L"+ intakeSubs.getIntakeLAngle() + "   R  " + intakeSubs.getIntakeRAngle());
 
   }
 

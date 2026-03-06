@@ -26,7 +26,8 @@ public class IntakeDown extends Command {
   @Override
   public void execute() {
 
-    // intakeSubs.intakeDown();
+    intakeSubs.setIntakeDown(.1);
+    intakeSubs.setIntakeIn(.5);
     
   }
 

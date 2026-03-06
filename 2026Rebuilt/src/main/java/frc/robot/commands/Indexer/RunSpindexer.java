@@ -26,14 +26,14 @@ public class RunSpindexer extends Command {
   @Override
   public void execute() {
 
-    // indexerSubs.runSpindexer();
+    indexerSubs.setSpindexer();
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // indexerSubs.runSpindexer(0);
+    indexerSubs.stopSpindexer();
   }
 
   // Returns true when the command should end.

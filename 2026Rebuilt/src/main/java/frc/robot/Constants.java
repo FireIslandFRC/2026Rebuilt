@@ -32,14 +32,16 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
  * constants are needed, to reduce verbosity.
  */
 public class Constants {
-  public static Optional<Alliance> alliance = Optional.empty();
-  static {
-    try {
-      alliance = DriverStation.getAlliance();
-    } catch (Exception e) {
-      // DriverStation may not be available at class-load time; keep default
-    }
-  }
+
+  public static Optional<Alliance> alliance = DriverStation.getAlliance();
+  // public static Optional<Alliance> alliance = Optional.empty();
+  // static {
+  //   try {
+  //     alliance = DriverStation.getAlliance();
+  //   } catch (Exception e) {
+  //     alliance = Alliance.Blue;
+  //   }
+  // }
   
     public static final int PhID = 15;
   

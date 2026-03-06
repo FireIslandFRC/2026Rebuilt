@@ -25,13 +25,13 @@ public class IntakeIn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // intakeSubs.intakeIn();
+    intakeSubs.setIntakeIn();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // intakeSubs.stop();
+    intakeSubs.stopRollers();
   }
 
   // Returns true when the command should end.

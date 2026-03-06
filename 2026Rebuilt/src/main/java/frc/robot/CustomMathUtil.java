@@ -65,7 +65,7 @@ public class CustomMathUtil {
         double targetAngleDeg = Math.toDegrees(targetAngleRad);
         double angleDifference;
         double currentRotation = robotPose.getRotation().getDegrees();
-        if (Constants.alliance.get() == Alliance.Blue){
+        if (Constants.alliance.get() == Alliance.Red){
             angleDifference = targetAngleDeg - currentRotation;
         }else{
             angleDifference = targetAngleDeg + currentRotation - 180;
