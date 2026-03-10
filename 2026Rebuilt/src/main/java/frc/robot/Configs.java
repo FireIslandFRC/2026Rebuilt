@@ -15,7 +15,7 @@ public final class Configs {
 
                         drivingConfig 
                                         .idleMode(IdleMode.kBrake)
-                                        .smartCurrentLimit(40)
+                                        .smartCurrentLimit(50)
                                         .inverted(false);
                         drivingConfig.encoder
                                         .positionConversionFactor(SwerveConstants.DRIVE_ENCODER_POSITION_CONVERSION) // meters   CHECKME make sure right conversion
@@ -64,7 +64,7 @@ public final class Configs {
 
                         intakeRollersConfig
                                         .idleMode(IdleMode.kBrake)
-                                        .smartCurrentLimit(40)
+                                        .smartCurrentLimit(60)
                                         .inverted(true);
                                         
                 }
@@ -106,7 +106,7 @@ public final class Configs {
                         flywheelConfig 
                                         .idleMode(IdleMode.kCoast)
                                         .smartCurrentLimit(40)
-                                        .inverted(true);
+                                        .inverted(false);
 
                         rotationConfig 
                                         .idleMode(IdleMode.kBrake)

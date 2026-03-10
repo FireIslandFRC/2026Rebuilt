@@ -46,7 +46,12 @@ public class Constants {
     public static final int PhID = 15;
   
     public static class PoseConstants {
-      public static final Pose2d TargetHubPose = alliance.get() == Alliance.Red ? new Pose2d(12,4, new Rotation2d()) : new Pose2d(4.6,4, new Rotation2d());
+      // if (!alliance) {
+        public static final Pose2d TargetHubPose = alliance.get() == Alliance.Red ? new Pose2d(12,4, new Rotation2d()) : new Pose2d(4.6,4, new Rotation2d());
+      // }else {
+        // public static final Pose2d TargetHubPose = new Pose2d(12,4, new Rotation2d());
+      // }
+    
   }
 
   public static class ControllerConstants {
@@ -59,8 +64,8 @@ public class Constants {
     public static final int kIntakeArmL = 12;
     public static final int 
     kIntakeArmRollers = 13;
-    public static final double kIntakeUpPos = 0.05;
-    public static final double kIntakeDownPos = .4; //TODO: get encoder value
+    public static final double kIntakeUpPos = -10;
+    public static final double kIntakeDownPos = -45; //TODO: get encoder value
     public static final double kIntakeStowedPos = 0.1;
   }
 
@@ -81,9 +86,9 @@ public class Constants {
     public static final String kCameraNameLeft = "Left";
     public static final String kCameraNameRight = "Right";    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final Transform3d kRobotToCamRight =
-            new Transform3d(new Translation3d(Units.inchesToMeters(9), Units.inchesToMeters(5.5), Units.inchesToMeters(8.5)), new Rotation3d(0, Units.degreesToRadians(19), Units.degreesToRadians(14)));
+            new Transform3d(new Translation3d(Units.inchesToMeters(-12), Units.inchesToMeters(-9), Units.inchesToMeters(13)), new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(22+180)));
     public static final Transform3d kRobotToCamLeft =
-            new Transform3d(new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(-4.5), Units.inchesToMeters(9.25)), new Rotation3d(0, Units.degreesToRadians(21), Units.degreesToRadians(-15)));
+            new Transform3d(new Translation3d(Units.inchesToMeters(-12), Units.inchesToMeters(6), Units.inchesToMeters(13)), new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-22-180)));
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
             AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
@@ -175,7 +180,7 @@ public class Constants {
       public static final int DRIVE_PORT = 26;
       public static final int ROTATION_PORT = 25;
       public static final int ABSOLUTE_ENCODER_PORT = 33;
-      public static final double OFFSET = -85.7;
+      public static final double OFFSET = 107;
       public static final boolean DRIVE_INVERTED = false; 
       public static final boolean ROTATION_INVERTED = true; 
 

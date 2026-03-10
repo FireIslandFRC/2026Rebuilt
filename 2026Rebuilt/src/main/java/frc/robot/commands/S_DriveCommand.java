@@ -15,7 +15,7 @@ public class S_DriveCommand extends Command {
   private DoubleSupplier xSupplier, ySupplier, zSupplier;
   private BooleanSupplier fieldOriented;
   private double SpeedMultiplier;
-  private DoubleSupplier speedIncrease, speedDecrease;
+  private BooleanSupplier speedDecrease;
   private int invert;
 
   /* * * CONSTRUCTOR * * */
@@ -26,14 +26,13 @@ public class S_DriveCommand extends Command {
    * @param zSupplier value input for rotation 
    * @param fieldOriented whether or not we want the bot to run in field oriented 
    */
-  public S_DriveCommand(SwerveSubsystem swerveSubs, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier zSupplier, BooleanSupplier fieldOriented, DoubleSupplier speedDecrease, DoubleSupplier speedIncrease) {
+  public S_DriveCommand(SwerveSubsystem swerveSubs, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier zSupplier, BooleanSupplier fieldOriented, BooleanSupplier speedDecrease) {
     this.swerveSubs = swerveSubs; 
     this.xSupplier = xSupplier; 
     this.ySupplier = ySupplier; 
     this.zSupplier = zSupplier; 
     this.fieldOriented = fieldOriented;
     this.speedDecrease = speedDecrease;
-    this.speedIncrease = speedIncrease;
     invert = 1;
     addRequirements(swerveSubs);
   }
@@ -52,10 +51,7 @@ public class S_DriveCommand extends Command {
     double ySpeed = ySupplier.getAsDouble(); 
     double zSpeed = zSupplier.getAsDouble(); 
     boolean FieldOriented = fieldOriented.getAsBoolean();
-    // double speedDecrease = this.speedDecrease.getAsDouble();
-    // double speedIncrease = this.speedIncrease.getAsDouble();
-    double speedDecrease = 1-this.speedDecrease.getAsDouble();
-    double speedIncrease = 1+this.speedIncrease.getAsDouble();
+    boolean speedDecrease = this.speedDecrease.getAsBoolean();
 
     //apply deadzone to speed values 
     xSpeed = deadzone(xSpeed); 
@@ -67,10 +63,12 @@ public class S_DriveCommand extends Command {
     } else {
       invert = 1;
     }
-    SmartDashboard.putNumber("speedDecrease", speedDecrease);
-    SmartDashboard.putNumber("speedIncrease", speedIncrease);
 
-    SpeedMultiplier = speedDecrease*speedIncrease;
+    // SmartDashboard.putNumber("speedDecrease", speedDecrease);
+    // SmartDashboard.putNumber("speedIncrease", speedIncrease);
+
+    // SpeedMultiplier = speedDecrease*speedIncrease;
+    SpeedMultiplier = speedDecrease ? .13 : 1;
 
     /* * * SETTING SWERVE STATES * * */
     swerveSubs.drive(xSpeed * invert, ySpeed * invert, zSpeed * 0.72, !FieldOriented, SpeedMultiplier);

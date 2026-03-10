@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,22 +59,27 @@ public class RobotContainer extends SubsystemBase{
   private final CustomMathUtil customMathUtil = new CustomMathUtil();
   private final Vision vision                 = new Vision(swerveSubs::addVisionMeasurement);
   //Joystick setting
-  public final static XboxController D_CONTROLLER  = new XboxController(ControllerConstants.kDriverControllerPort);
+  // public final static XboxController D_CONTROLLER  = new XboxController(ControllerConstants.kDriverControllerPort);
   public final static XboxController OP_CONTROLLER = new XboxController(ControllerConstants.kOperatorControllerPort);
+  public final static Joystick D_CONTROLLER = new Joystick(ControllerConstants.kDriverControllerPort);
   public final static XboxController TEST          = new XboxController(5);
   //DRIVE BUTTONS     
-  private final double speedSlow              = D_CONTROLLER.getLeftTriggerAxis();
-  private final double speedFast              = D_CONTROLLER.getRightTriggerAxis();
-  private final JoystickButton resetGyro      = new JoystickButton(D_CONTROLLER, 3);
+
+
+  // private final double speedSlow              = D_CONTROLLER.getLeftTriggerAxis();
+  // private final double speedFast              = D_CONTROLLER.getRightTriggerAxis();
+  private final JoystickButton resetGyro      = new JoystickButton(D_CONTROLLER, 8);
   private final JoystickButton fieldOriented  = new JoystickButton(D_CONTROLLER, 12);
 
-  private final JoystickButton driveToScoreL  = new JoystickButton(D_CONTROLLER, 5);
-  private final JoystickButton driveToScoreR  = new JoystickButton(D_CONTROLLER, 6);
-  private final POVButton driveToScoreLPOV    = new POVButton(D_CONTROLLER, 5);
-  private final POVButton driveToScoreRPOV    = new POVButton(D_CONTROLLER, 6);//TODO: angles
-  private final JoystickButton driveToMidR    = new JoystickButton(D_CONTROLLER, 2);
-  private final JoystickButton driveToMidL    = new JoystickButton(D_CONTROLLER, 2);
-  private final JoystickButton driveToClimb   = new JoystickButton(D_CONTROLLER, 4);
+  // private final JoystickButton driveToScoreL  = new JoystickButton(D_CONTROLLER, 5);
+  // private final JoystickButton driveToScoreR  = new JoystickButton(D_CONTROLLER, 6);
+  // // private final POVButton driveToScoreLPOV    = new POVButton(D_CONTROLLER, 5);
+  // // private final POVButton driveToScoreRPOV    = new POVButton(D_CONTROLLER, 6);//TODO: angles
+  // private final JoystickButton driveToMidR    = new JoystickButton(D_CONTROLLER, 2);
+  // private final JoystickButton driveToMidL    = new JoystickButton(D_CONTROLLER, 2);
+  // private final JoystickButton driveToClimb   = new JoystickButton(D_CONTROLLER, 4);
+
+
 
   private final JoystickButton shoot        = new JoystickButton(OP_CONTROLLER, 1);
   private final JoystickButton shootSimple  = new JoystickButton(OP_CONTROLLER, 4);
@@ -86,15 +92,15 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton runToPosition = new JoystickButton(D_CONTROLLER, 1);
   private final JoystickButton spindexer     = new JoystickButton(OP_CONTROLLER, 2);
 
-  private final JoystickButton one       = new JoystickButton(TEST, 1);
-  private final JoystickButton two       = new JoystickButton(TEST, 2);
-  private final JoystickButton three       = new JoystickButton(TEST, 3);
-  private final JoystickButton four       = new JoystickButton(TEST, 4);
-  private final JoystickButton five       = new JoystickButton(TEST, 5);
-  private final JoystickButton six       = new JoystickButton(TEST, 6);
-  private final JoystickButton seven       = new JoystickButton(TEST, 7);
-  private final JoystickButton eight       = new JoystickButton(TEST, 8);
-  private final JoystickButton nine       = new JoystickButton(TEST, 9);
+  private final JoystickButton one   = new JoystickButton(TEST, 1);
+  private final JoystickButton two   = new JoystickButton(TEST, 2);
+  private final JoystickButton three = new JoystickButton(TEST, 3);
+  private final JoystickButton four  = new JoystickButton(TEST, 4);
+  private final JoystickButton five  = new JoystickButton(TEST, 5);
+  private final JoystickButton six   = new JoystickButton(TEST, 6);
+  private final JoystickButton seven = new JoystickButton(TEST, 7);
+  private final JoystickButton eight = new JoystickButton(TEST, 8);
+  private final JoystickButton nine  = new JoystickButton(TEST, 9);
 
   public RobotContainer() {
 
@@ -119,19 +125,21 @@ public class RobotContainer extends SubsystemBase{
             swerveSubs // The drive subsystem
         );
 
-    autos = new Autos(swerveSubs, autoFactory);
+    autos = new Autos(swerveSubs, autoFactory, indexerSubs, shooter, intakeSubs);
 
     autoChooser.addRoutine("MoveFoward", autos::moveFoward);
+    autoChooser.addRoutine("six", autos::ShootsiX);
+    // autoChooser.addCmd("ShootingAuto", autos::Shoot);
+    autoChooser.addCmd("flywheel", () -> new PrintCommand("test"));
 
     swerveSubs.setDefaultCommand(
       new S_DriveCommand(
         swerveSubs,
-        () -> -D_CONTROLLER.getLeftY(), 
-        () -> -D_CONTROLLER.getLeftX(), 
-        () -> -D_CONTROLLER.getRightX(),
-        () -> fieldOriented.getAsBoolean(), 
-        () -> D_CONTROLLER.getLeftTriggerAxis(),
-        () -> D_CONTROLLER.getRightTriggerAxis()
+        () -> -D_CONTROLLER.getY(), 
+        () -> -D_CONTROLLER.getX(), 
+        () -> -D_CONTROLLER.getTwist(),
+        () -> fieldOriented.getAsBoolean(),
+        () -> D_CONTROLLER.getTrigger()
       )
     );
 
@@ -144,13 +152,13 @@ public class RobotContainer extends SubsystemBase{
   
 
   private void configureBindings() {
-    driveToScoreL.whileTrue(autos.MidLhoot().cmd());
-    driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
-    driveToScoreR.whileTrue(autos.MidRhoot().cmd());
-    driveToScoreRPOV.whileTrue(autos.MidRhoot().cmd());
+    // driveToScoreL.whileTrue(autos.MidLhoot().cmd());
+    // driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
+    // driveToScoreR.whileTrue(autos.MidRhoot().cmd());
+    // driveToScoreRPOV.whileTrue(autos.MidRhoot().cmd());
 
-    driveToMidR.whileTrue(autos.RightMid().cmd());
-    driveToMidL.whileTrue(autos.LeftMid().cmd());
+    // driveToMidR.whileTrue(autos.RightMid().cmd());
+    // driveToMidL.whileTrue(autos.LeftMid().cmd());
 
     intakeL.whileTrue(new IntakeToggle(intakeSubs));
 
@@ -167,20 +175,30 @@ public class RobotContainer extends SubsystemBase{
 
     // one.whileTrue(new IntakeIn(intakeSubs));
     
-
     five.whileTrue(new IntakeDown(intakeSubs));
     six.whileTrue(new IntakeUp(intakeSubs));
 
-    eight.whileTrue(new SequentialCommandGroup(new InstantCommand(() -> indexerSubs.setCentralizer(0.3)), new InstantCommand(() -> shooter.setShootingSpeed(.55)), new InstantCommand(() -> indexerSubs.setSpindexer(-0.2)),  new WaitCommand(.6), new InstantCommand(() -> indexerSubs.setCentralizer(-.6)), new WaitCommand(.5), new RunSpindexer(indexerSubs)));
+    seven.whileTrue(new IntakeDown(intakeSubs).withTimeout(.5));
+    seven.whileFalse(new IntakeUp(intakeSubs));
+
+    eight.whileTrue(new SequentialCommandGroup(new InstantCommand(() -> swerveSubs.lock()), 
+                                              new InstantCommand(() -> indexerSubs.setCentralizer(0.2)), 
+                                              new InstantCommand(() -> shooter.setShootingSpeed(-.55)), 
+                                              new InstantCommand(() -> indexerSubs.setSpindexer(-0.12)),  
+                                              new WaitCommand(.6), 
+                                              new InstantCommand(() -> indexerSubs.setCentralizer(-.65)), 
+                                              new WaitCommand(.5), new RunSpindexer(indexerSubs)));
+
     eight.whileFalse(new InstantCommand(() -> shooter.setShootingSpeed(0)));
     eight.whileFalse(new InstantCommand(() -> indexerSubs.setCentralizer(0)));
+    eight.whileFalse(new InstantCommand(() -> indexerSubs.setSpindexer(0)));
 
     seven.whileTrue(new RunCentralizer(indexerSubs));
   }
     
   @Override
   public void periodic() {
-    // vision.periodic();
+    vision.periodic();
     // System.out.println("Intake L Angle: " + intakeSubs.getIntakeLAngle());
     // System.out.println("Intake R Angle: " + intakeSubs.getIntakeRAngle());
     // System.out.println("Turret Angle: " + shooter.getTurretAngle());
@@ -202,6 +220,21 @@ public class RobotContainer extends SubsystemBase{
     // System.out.println("TurretAngle" + shooter.getTurretAn
     // System.out.println("IntakeAngle  L"+ intakeSubs.getIntakeLAngle() + "   R  " + intakeSubs.getIntakeRAngle());
 
+    SmartDashboard.putNumber("Left Arm", intakeSubs.getIntakeLAngle());
+    SmartDashboard.putNumber("Right Arm", intakeSubs.getIntakeRAngle());
+    SmartDashboard.putNumber("Turret", shooter.getTurretAngle());
+    
+
+  }
+
+  public Command getAutonomousCommand(){
+    return new SequentialCommandGroup(new InstantCommand(() -> swerveSubs.lock()), 
+                                              new InstantCommand(() -> indexerSubs.setCentralizer(0.2)), 
+                                              new InstantCommand(() -> shooter.setShootingSpeed(-.55)), 
+                                              new InstantCommand(() -> indexerSubs.setSpindexer(-0.12)),  
+                                              new WaitCommand(.6), 
+                                              new InstantCommand(() -> indexerSubs.setCentralizer(-.65)), 
+                                              new WaitCommand(.5), new RunSpindexer(indexerSubs));
   }
 
 }
