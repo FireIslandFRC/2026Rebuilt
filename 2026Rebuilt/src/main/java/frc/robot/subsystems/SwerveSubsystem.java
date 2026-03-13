@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -99,6 +100,8 @@ public class SwerveSubsystem extends SubsystemBase {
       new SwerveModule(2, SwerveConstants.FrontRight.constants), 
       new SwerveModule(3, SwerveConstants.BackRight.constants)
     };
+
+    
 
     //field2d
     m_field = new Field2d();

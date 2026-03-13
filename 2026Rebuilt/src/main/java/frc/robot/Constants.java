@@ -66,7 +66,7 @@ public class Constants {
     kIntakeArmRollers = 13;
     public static final double kIntakeUpPos = -10;
     public static final double kIntakeDownPos = -45; //TODO: get encoder value
-    public static final double kIntakeStowedPos = 0.1;
+    public static final double kIntakeStowedPos = -34;
   }
 
   public static class TurretConstants {
@@ -85,6 +85,8 @@ public class Constants {
   public static class Vision {
     public static final String kCameraNameLeft = "Left";
     public static final String kCameraNameRight = "Right";    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+    public static final String kCameraNameDrive = "Drive";
+    
     public static final Transform3d kRobotToCamRight =
             new Transform3d(new Translation3d(Units.inchesToMeters(-12), Units.inchesToMeters(-9), Units.inchesToMeters(13)), new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(22+180)));
     public static final Transform3d kRobotToCamLeft =
@@ -113,7 +115,6 @@ public class Constants {
     public static final double DRIVE_GEAR_RATIO = 5.27 / 1;
     public static final double ROTATION_GEAR_RATIO = 26 / 1;
     
-    public static final double VOLTAGE = 7.2;
 
     /* * * SWERVE DRIVE KINEMATICS * * */
     // ORDER IS ALWAYS FL, BL, FR, BR 
@@ -137,6 +138,7 @@ public class Constants {
       new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
       // back right
       new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2)
+      
     );
 
     /* * * FRONT LEFT * * */
@@ -199,7 +201,8 @@ public class Constants {
     public static final double KD_TURNING = 0.00;
 
     /* * * MAX * * */
-    public static final double MAX_SPEED = 5.5; //12.0 ft/s CHECKME
+    public static final double VOLTAGE = 7.2;
+    public static final double MAX_SPEED = 3; //12.0 ft/s CHECKME
     public static final double MAX_ROTATION = MAX_SPEED / Math.hypot(TRACK_WIDTH / 2.0, WHEEL_BASE / 2.0);
 
   }

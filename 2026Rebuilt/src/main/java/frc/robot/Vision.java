@@ -26,6 +26,7 @@
 
  import static frc.robot.Constants.Vision.kCameraNameLeft;
  import static frc.robot.Constants.Vision.kCameraNameRight;
+ import static frc.robot.Constants.Vision.kCameraNameDrive;
 import static frc.robot.Constants.Vision.kMultiTagStdDevs;
 import static frc.robot.Constants.Vision.kRobotToCamLeft;
 import static frc.robot.Constants.Vision.kRobotToCamRight;
@@ -52,6 +53,7 @@ import edu.wpi.first.math.numbers.N3;
  public class Vision {
     private final PhotonCamera cameraLeft;
     private final PhotonCamera cameraRight;
+    private final PhotonCamera cameraDrive;
     private final PhotonPoseEstimator photonEstimatorLeft;
     private final PhotonPoseEstimator photonEstimatorRight;
     private Matrix<N3, N1> curStdDevs;
@@ -65,6 +67,7 @@ import edu.wpi.first.math.numbers.N3;
         this.estConsumer = estConsumer;
         cameraLeft = new PhotonCamera(kCameraNameLeft);
         cameraRight = new PhotonCamera(kCameraNameRight);
+        cameraDrive = new PhotonCamera(kCameraNameDrive);
 
         photonEstimatorLeft =
                 new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCamLeft);
@@ -85,11 +88,11 @@ import edu.wpi.first.math.numbers.N3;
             //System.out.println(visionEst);
             updateEstimationStdDevs(visionEst, change.getTargets());
             visionEst.ifPresent(
-                     est -> {
-                         // Change our trust in the measurement based on the tags we can see
-                         var estStdDevs = getEstimationStdDevs();
-                         estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                     });
+                est -> {
+                    // Change our trust in the measurement based on the tags we can see
+                    var estStdDevs = getEstimationStdDevs();
+                    estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                });
          }
 
         

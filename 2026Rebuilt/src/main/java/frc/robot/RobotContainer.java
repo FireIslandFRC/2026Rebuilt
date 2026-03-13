@@ -12,6 +12,7 @@ import frc.robot.commands.angleUpTurret;
 import frc.robot.commands.Intake.IntakeDown;
 import frc.robot.commands.Intake.IntakeToggle;
 import frc.robot.commands.Intake.IntakeIn;
+import frc.robot.commands.Intake.IntakeMiddle;
 import frc.robot.commands.Intake.IntakeUp;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -60,7 +61,7 @@ public class RobotContainer extends SubsystemBase{
   private final Vision vision                 = new Vision(swerveSubs::addVisionMeasurement);
   //Joystick setting
   // public final static XboxController D_CONTROLLER  = new XboxController(ControllerConstants.kDriverControllerPort);
-  public final static XboxController OP_CONTROLLER = new XboxController(ControllerConstants.kOperatorControllerPort);
+  //public final static XboxController OP_CONTROLLER = new XboxController(ControllerConstants.kOperatorControllerPort);
   public final static Joystick D_CONTROLLER = new Joystick(ControllerConstants.kDriverControllerPort);
   public final static XboxController TEST          = new XboxController(5);
   //DRIVE BUTTONS     
@@ -72,6 +73,7 @@ public class RobotContainer extends SubsystemBase{
   private final JoystickButton fieldOriented  = new JoystickButton(D_CONTROLLER, 12);
 
   // private final JoystickButton driveToScoreL  = new JoystickButton(D_CONTROLLER, 5);
+  private final JoystickButton twoDrive  = new JoystickButton(D_CONTROLLER,2);
   // private final JoystickButton driveToScoreR  = new JoystickButton(D_CONTROLLER, 6);
   // // private final POVButton driveToScoreLPOV    = new POVButton(D_CONTROLLER, 5);
   // // private final POVButton driveToScoreRPOV    = new POVButton(D_CONTROLLER, 6);//TODO: angles
@@ -81,16 +83,16 @@ public class RobotContainer extends SubsystemBase{
 
 
 
-  private final JoystickButton shoot        = new JoystickButton(OP_CONTROLLER, 1);
-  private final JoystickButton shootSimple  = new JoystickButton(OP_CONTROLLER, 4);
-  private final JoystickButton turretLeft   = new JoystickButton(OP_CONTROLLER, 9);
-  private final JoystickButton turretRight  = new JoystickButton(OP_CONTROLLER, 10);
-  private final JoystickButton flywheel     = new JoystickButton(OP_CONTROLLER, 3);
-  private final JoystickButton intakeL      = new JoystickButton(OP_CONTROLLER, 5);
-  private final JoystickButton intakeR      = new JoystickButton(OP_CONTROLLER, 6);
+  // private final JoystickButton shoot        = new JoystickButton(OP_CONTROLLER, 1);
+  // private final JoystickButton shootSimple  = new JoystickButton(OP_CONTROLLER, 4);
+  // private final JoystickButton turretLeft   = new JoystickButton(OP_CONTROLLER, 9);
+  // private final JoystickButton turretRight  = new JoystickButton(OP_CONTROLLER, 10);
+  // private final JoystickButton flywheel     = new JoystickButton(OP_CONTROLLER, 3);
+  // private final JoystickButton intakeL      = new JoystickButton(OP_CONTROLLER, 5);
+  // private final JoystickButton intakeR      = new JoystickButton(OP_CONTROLLER, 6);
 
-  private final JoystickButton runToPosition = new JoystickButton(D_CONTROLLER, 1);
-  private final JoystickButton spindexer     = new JoystickButton(OP_CONTROLLER, 2);
+  // private final JoystickButton runToPosition = new JoystickButton(D_CONTROLLER, 1);
+  // private final JoystickButton spindexer     = new JoystickButton(OP_CONTROLLER, 2);
 
   private final JoystickButton one   = new JoystickButton(TEST, 1);
   private final JoystickButton two   = new JoystickButton(TEST, 2);
@@ -141,6 +143,7 @@ public class RobotContainer extends SubsystemBase{
         () -> fieldOriented.getAsBoolean(),
         () -> D_CONTROLLER.getTrigger()
       )
+      
     );
 
     configureBindings();
@@ -152,6 +155,8 @@ public class RobotContainer extends SubsystemBase{
   
 
   private void configureBindings() {
+
+    twoDrive.whileTrue(new InstantCommand(() -> swerveSubs.lock()));
     // driveToScoreL.whileTrue(autos.MidLhoot().cmd());
     // driveToScoreLPOV.whileTrue(autos.MidLhoot().cmd());
     // driveToScoreR.whileTrue(autos.MidRhoot().cmd());
@@ -160,42 +165,60 @@ public class RobotContainer extends SubsystemBase{
     // driveToMidR.whileTrue(autos.RightMid().cmd());
     // driveToMidL.whileTrue(autos.LeftMid().cmd());
 
-    intakeL.whileTrue(new IntakeToggle(intakeSubs));
+    // intakeL.whileTrue(new IntakeToggle(intakeSubs));
 
     resetGyro.onTrue(new InstantCommand(() -> swerveSubs.resetPigeon()));
-    runToPosition.whileTrue(autos.moveFowardTele().cmd());
+    // runToPosition.whileTrue(autos.moveFowardTele().cmd());
 
-    spindexer.whileTrue(new RunSpindexer(indexerSubs));
+    // spindexer.whileTrue(new RunSpindexer(indexerSubs));
     
-    one.whileTrue(new angleUpTurret(shooter));
-    two.whileTrue(new angleDownTurret(shooter));
+    // one.whileTrue(new angleUpTurret(shooter));
+    // two.whileTrue(new angleDownTurret(shooter));
 
-    three.whileTrue(new TurretLeft(shooter));
-    four.whileTrue(new TurretRight(shooter));
+    // three.whileTrue(new TurretLeft(shooter));
+    // four.whileTrue(new TurretRight(shooter));
 
-    // one.whileTrue(new IntakeIn(intakeSubs));
-    
-    five.whileTrue(new IntakeDown(intakeSubs));
-    six.whileTrue(new IntakeUp(intakeSubs));
+    one.whileTrue( new InstantCommand(() -> shooter.setShootingSpeed(-.55)))
+       .onFalse(   new InstantCommand(() -> shooter.setShootingSpeed(0)));
+
+    five.whileTrue(new SequentialCommandGroup(
+                    new InstantCommand(() -> indexerSubs.setCentralizer(0.2)), 
+                    new InstantCommand(() -> indexerSubs.setSpindexer(-0.12))));
+
+    six.whileTrue(new SequentialCommandGroup(
+                    new InstantCommand(() -> indexerSubs.setCentralizer(-0.2)),
+                    new InstantCommand(() -> indexerSubs.setSpindexer(0.2))));
+
+    five.onFalse(new SequentialCommandGroup(
+                    new InstantCommand(() -> indexerSubs.setCentralizer(0)), 
+                    new InstantCommand(() -> indexerSubs.setSpindexer(0))));
+
+    six.onFalse(new SequentialCommandGroup(
+                    new InstantCommand(() -> indexerSubs.setCentralizer(0)), 
+                    new InstantCommand(() -> indexerSubs.stopSpindexer())));
+
+    four.onTrue(new IntakeUp(intakeSubs));
 
     seven.whileTrue(new IntakeDown(intakeSubs).withTimeout(.5));
-    seven.whileFalse(new IntakeUp(intakeSubs));
+    seven.whileFalse(new IntakeMiddle(intakeSubs));
 
-    eight.whileTrue(new SequentialCommandGroup(new InstantCommand(() -> swerveSubs.lock()), 
-                                              new InstantCommand(() -> indexerSubs.setCentralizer(0.2)), 
-                                              new InstantCommand(() -> shooter.setShootingSpeed(-.55)), 
-                                              new InstantCommand(() -> indexerSubs.setSpindexer(-0.12)),  
-                                              new WaitCommand(.6), 
-                                              new InstantCommand(() -> indexerSubs.setCentralizer(-.65)), 
-                                              new WaitCommand(.5), new RunSpindexer(indexerSubs)));
+    // eight.whileTrue(new SequentialCommandGroup(new InstantCommand(() -> swerveSubs.lock()), 
+    //                                           new InstantCommand(() -> indexerSubs.setCentralizer(0.2)), 
+    //                                           new InstantCommand(() -> shooter.setShootingSpeed(-.55)), 
+    //                                           new InstantCommand(() -> indexerSubs.setSpindexer(-0.12)),  
+    //                                           new WaitCommand(.6), 
+    //                                           new InstantCommand(() -> indexerSubs.setCentralizer(-.65)), 
+    //                                           new WaitCommand(.5), new RunSpindexer(indexerSubs)));
 
-    eight.whileFalse(new InstantCommand(() -> shooter.setShootingSpeed(0)));
-    eight.whileFalse(new InstantCommand(() -> indexerSubs.setCentralizer(0)));
-    eight.whileFalse(new InstantCommand(() -> indexerSubs.setSpindexer(0)));
-
-    seven.whileTrue(new RunCentralizer(indexerSubs));
-  }
     
+
+    // eight.whileFalse(new InstantCommand(() -> shooter.setShootingSpeed(0)));
+    // eight.whileFalse(new InstantCommand(() -> indexerSubs.setCentralizer(0)));
+    // eight.whileFalse(new InstantCommand(() -> indexerSubs.setSpindexer(0)));
+
+    // seven.whileTrue(new RunCentralizer(indexerSubs));
+  }
+
   @Override
   public void periodic() {
     vision.periodic();
@@ -223,8 +246,11 @@ public class RobotContainer extends SubsystemBase{
     SmartDashboard.putNumber("Left Arm", intakeSubs.getIntakeLAngle());
     SmartDashboard.putNumber("Right Arm", intakeSubs.getIntakeRAngle());
     SmartDashboard.putNumber("Turret", shooter.getTurretAngle());
+    SmartDashboard.putNumber("TurretRPM", shooter.getFlywheelRPM());
+    SmartDashboard.putNumber("CentRPM", indexerSubs.getCentralizerRPM());
+    SmartDashboard.putBoolean("Shooting", eight.getAsBoolean());
+    // SmartDashboard.putData(D_CONTROLLER.);
     
-
   }
 
   public Command getAutonomousCommand(){

@@ -126,7 +126,7 @@ public class SwerveModule {
         SmartDashboard.putNumber("Error" + absoluteEncoder.getDeviceID(), rotationPID.getError());
         SmartDashboard.putNumber("SetPoint" + absoluteEncoder.getDeviceID(), rotationPID.getSetpoint());
 
-        driveMotor.set(optimizedState.speedMetersPerSecond / SwerveConstants.MAX_SPEED * SwerveConstants.VOLTAGE);
+        driveMotor.set(optimizedState.speedMetersPerSecond /*/ SwerveConstants.MAX_SPEED*/ * SwerveConstants.VOLTAGE); //NOTE: motor profiling card
 
     }
 
@@ -144,7 +144,7 @@ public class SwerveModule {
         SmartDashboard.putNumber("Error" + absoluteEncoder.getDeviceID(), rotationPID.getError());
         SmartDashboard.putNumber("SetPoint" + absoluteEncoder.getDeviceID(), rotationPID.getSetpoint());
 
-        driveMotor.set(optimizedState.speedMetersPerSecond / SwerveConstants.MAX_SPEED * SwerveConstants.VOLTAGE * speed);
+        driveMotor.set(optimizedState.speedMetersPerSecond/* / SwerveConstants.MAX_SPEED **/ * SwerveConstants.VOLTAGE * speed);
 
     }
 

@@ -50,6 +50,11 @@ public class Intake extends SubsystemBase{
         intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeDownPos, ControlType.kPosition);
     }
 
+    public void setIntakeMid(){
+        intakeMotorLeftController.setSetpoint(IntakeConstants.kIntakeStowedPos, ControlType.kPosition);
+        intakeMotorRightController.setSetpoint(IntakeConstants.kIntakeStowedPos, ControlType.kPosition);
+    }
+
     public void setIntakeUp(double speed){
         intakeMotorLeft.set(speed);
         intakeMotorRight.set(speed);

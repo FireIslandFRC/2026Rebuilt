@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.ResetMode;
@@ -14,24 +15,25 @@ import frc.robot.Constants.IntakeConstants;
 
 import frc.robot.Configs;
  
+@Logged
 public class Indexer extends SubsystemBase{
     private SparkFlex centralizerLeft;
     private SparkFlex centralizerRight;
     private SparkFlex spindexer;
-    private SparkClosedLoopController centralizerLeftPID;
-    private SparkClosedLoopController centralizerRightPID;
+    private SparkClosedLoopController centralizerLeftPID, centralizerRightPID, spindexerPID;
 
     public Indexer(){
-        centralizerLeft = new SparkFlex(IndexerConstants.kCentralizerL, MotorType.kBrushless);
+        centralizerLeft  = new SparkFlex(IndexerConstants.kCentralizerL, MotorType.kBrushless);
         centralizerRight = new SparkFlex(IndexerConstants.kCentralizerR, MotorType.kBrushless);
-        spindexer = new SparkFlex(IndexerConstants.KSpindexer, MotorType.kBrushless);
+        spindexer        = new SparkFlex(IndexerConstants.KSpindexer,    MotorType.kBrushless);
 
-        centralizerLeft.configure(Configs.IndexerConfig.indexerConfigL, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        centralizerRight.configure(Configs.IndexerConfig.indexerConfigR, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
-        spindexer.configure(Configs.IndexerConfig.spindexerConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
+        centralizerLeft .configure(Configs.IndexerConfig.indexerConfigL,  ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        centralizerRight.configure(Configs.IndexerConfig.indexerConfigR,  ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        spindexer       .configure(Configs.IndexerConfig.spindexerConfig, ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);        
         
-        centralizerLeftPID = centralizerLeft.getClosedLoopController();
+        centralizerLeftPID  = centralizerLeft .getClosedLoopController();
         centralizerRightPID = centralizerRight.getClosedLoopController();
+        spindexerPID        = spindexer       .getClosedLoopController();
     
     }
     
@@ -42,9 +44,6 @@ public class Indexer extends SubsystemBase{
     }
 
     public void setCentralizer(double speed){
-        // centralizerLeft.set(speed); 
-        // centralizerRight.set(speed);
-
         centralizerLeftPID.setSetpoint(speed * .75, ControlType.kDutyCycle);
         centralizerRightPID.setSetpoint(speed, ControlType.kDutyCycle);
     }
@@ -59,10 +58,15 @@ public class Indexer extends SubsystemBase{
     }
 
     public void setSpindexer(double speed){
-        spindexer.set(speed);
+        spindexerPID.setSetpoint(speed, ControlType.kDutyCycle);
     }
 
     public void stopSpindexer(){
         spindexer.set(0);
     }
+
+     public double getCentralizerRPM(){
+        return centralizerLeft.getEncoder().getVelocity();
+    }
+
 }

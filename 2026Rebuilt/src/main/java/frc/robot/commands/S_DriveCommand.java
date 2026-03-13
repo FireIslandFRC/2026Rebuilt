@@ -68,12 +68,11 @@ public class S_DriveCommand extends Command {
     // SmartDashboard.putNumber("speedIncrease", speedIncrease);
 
     // SpeedMultiplier = speedDecrease*speedIncrease;
-    SpeedMultiplier = speedDecrease ? .13 : 1;
+    SpeedMultiplier = speedDecrease ? .05 : 1;
 
     /* * * SETTING SWERVE STATES * * */
     swerveSubs.drive(xSpeed * invert, ySpeed * invert, zSpeed * 0.72, !FieldOriented, SpeedMultiplier);
 
-    
     SmartDashboard.putNumber("x speed", xSpeed * SpeedMultiplier);
     SmartDashboard.putNumber("y speed", ySpeed * SpeedMultiplier);
     SmartDashboard.putNumber("z speed", zSpeed);

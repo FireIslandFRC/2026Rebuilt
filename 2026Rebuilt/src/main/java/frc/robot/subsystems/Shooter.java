@@ -115,6 +115,10 @@ public class Shooter extends SubsystemBase{
         return pitchServo.getPosition();
     }
 
+    public double getFlywheelRPM(){
+        return flywheel.getEncoder().getVelocity();
+    }
+
     /***************                    flywheel                   ****************/
     public void setShootingSpeed(double speed){
         flywheelPID.setSetpoint(speed, ControlType.kDutyCycle);
