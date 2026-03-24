@@ -1,23 +1,20 @@
 package frc.robot.commands.Turret;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CustomMathUtil;
 import frc.robot.RobotStates;
+import frc.robot.RobotStates.CentralizerState;
+import frc.robot.RobotStates.SpindexerState;
 import frc.robot.RobotStates.TurretState;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class TurretAim extends Command {
+public class Shoot extends Command {
   private Shooter shooterSubs; 
   private CustomMathUtil customMathUtil;
   private SwerveSubsystem swerveSubs;
+  private Indexer indexerSubs;
 
   /* * * CONSTRUCTOR * * */
   /* 
@@ -27,38 +24,51 @@ public class TurretAim extends Command {
    * @param zSupplier value input for rotation 
    * @param fieldOriented whether or not we want the bot to run in field oriented 
    */
-  public TurretAim(Shooter shooterSubs, CustomMathUtil customMathUtil, SwerveSubsystem swerveSubs) {
+  public Shoot(Shooter shooterSubs, Indexer indexerSubs, CustomMathUtil customMathUtil, SwerveSubsystem swerveSubs) {
     this.shooterSubs = shooterSubs; 
     this.customMathUtil = customMathUtil;
     this.swerveSubs = swerveSubs;
-    addRequirements(shooterSubs);
+    this.indexerSubs = indexerSubs;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (RobotStates.getTurretState() == TurretState.OFF){
-      RobotStates.setTurretState(TurretState.AIMING);
-    }else{
-      RobotStates.setTurretState(TurretState.OFF);
-    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotStates.getTurretState() == TurretState.AIMING){
-      double neededAngle = customMathUtil.turretAngleToTarget(swerveSubs.getPose());
-      shooterSubs.turretAngle(neededAngle);
-    }else{
-      shooterSubs.stopTurret();
-      end(false);
+    switch (RobotStates.getTurretState()) {
+      case SHOOT_HUB:
+
+        indexerSubs.setSpindexer(1);
+        indexerSubs.setCentralizer(1);
+        
+        break;
+      case SHOOT_BACKLEFT:
+
+        indexerSubs.setSpindexer(1);
+        indexerSubs.setCentralizer(1);
+
+        break;
+      case SHOOT_BACKRIGHT:
+        indexerSubs.setSpindexer(1);
+        indexerSubs.setCentralizer(1);
+
+      break;
+      
+      default:
+        indexerSubs.setSpindexer(0);
+        indexerSubs.setCentralizer(0);
+        break;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    RobotStates.setTurretState(TurretState.OFF);
   }
 
   // Returns true when the command should end.

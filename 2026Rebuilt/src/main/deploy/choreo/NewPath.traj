@@ -1,5 +1,5 @@
 {
- "name":"shoot",
+ "name":"NewPath",
  "version":3,
  "snapshot":{
   "waypoints":[],
@@ -8,8 +8,8 @@
  },
  "params":{
   "waypoints":[
-    {"x":{"exp":"16.53009796142578 m", "val":16.53009796142578}, "y":{"exp":"0.3277151882648468 m", "val":0.3277151882648468}, "heading":{"exp":"1.6295521495106193 rad", "val":1.629552149510619}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
-    {"x":{"exp":"-0.04586407542228699 m", "val":-0.04586407542228699}, "y":{"exp":"-0.027078496292233467 m", "val":-0.027078496292233467}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
+    {"x":{"exp":"6.255271911621094 m", "val":6.255271911621094}, "y":{"exp":"8.090600967407227 m", "val":8.090600967407227}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"10.427645683288574 m", "val":10.427645683288574}, "y":{"exp":"0.46963268518447876 m", "val":0.4696326851844787}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},

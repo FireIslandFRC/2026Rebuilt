@@ -42,16 +42,15 @@ public class Constants {
   //     alliance = Alliance.Blue;
   //   }
   // }
-  
+
     public static final int PhID = 15;
   
     public static class PoseConstants {
-      // if (!alliance) {
-        public static final Pose2d TargetHubPose = alliance.get() == Alliance.Red ? new Pose2d(12,4, new Rotation2d()) : new Pose2d(4.6,4, new Rotation2d());
-      // }else {
-        // public static final Pose2d TargetHubPose = new Pose2d(12,4, new Rotation2d());
-      // }
-    
+        // public static final Pose2d TargetHubPose = alliance.get() == Alliance.Red ? new Pose2d(12,4, new Rotation2d()) : new Pose2d(12,4, new Rotation2d());
+
+            public static final Pose2d TargetHubPose = new Pose2d(12,4, new Rotation2d());
+            public static final Pose2d AllianceWall = new Pose2d(16.5,0, new Rotation2d());
+
   }
 
   public static class ControllerConstants {
@@ -62,23 +61,23 @@ public class Constants {
   public static class IntakeConstants {
     public static final int kIntakeArmR = 11;
     public static final int kIntakeArmL = 12;
-    public static final int 
-    kIntakeArmRollers = 13;
+    public static final int kIntakeArmRollers = 13;
     public static final double kIntakeUpPos = -10;
-    public static final double kIntakeDownPos = -45; //TODO: get encoder value
+    public static final double kIntakeDownPos = -50; //TODO: get encoder value
     public static final double kIntakeStowedPos = -34;
   }
 
   public static class TurretConstants {
     // public static final int kRotationServo = 1;
-    public static final int kPitchServo = 2;
-    public static final int kFlywheel = 16;
+    public static final int kPitchMotor = 19;
+    public static final int kFlywheel = 18;
     public static final int kRotationMotor = 17; //FIXME
   }
 
   public static class IndexerConstants {
     public static final int kCentralizerL = 14;
     public static final int kCentralizerR = 15;
+    public static final int kCentralizerM = 16;
     public static final int KSpindexer = 10;
   }
 
@@ -88,16 +87,16 @@ public class Constants {
     public static final String kCameraNameDrive = "Drive";
     
     public static final Transform3d kRobotToCamRight =
-            new Transform3d(new Translation3d(Units.inchesToMeters(-12), Units.inchesToMeters(-9), Units.inchesToMeters(13)), new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(22+180)));
+            new Transform3d(new Translation3d(Units.inchesToMeters(-13), Units.inchesToMeters(8), Units.inchesToMeters(13)), new Rotation3d(0, 0, Units.degreesToRadians(202)));
     public static final Transform3d kRobotToCamLeft =
-            new Transform3d(new Translation3d(Units.inchesToMeters(-12), Units.inchesToMeters(6), Units.inchesToMeters(13)), new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-22-180)));
+            new Transform3d(new Translation3d(Units.inchesToMeters(-13), Units.inchesToMeters(-4.5), Units.inchesToMeters(13)), new Rotation3d(0, 0, Units.degreesToRadians(158)));
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
             AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 8);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 999);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 999);
   }
 
 

@@ -1,14 +1,7 @@
 package frc.robot.commands.Indexer;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.SwerveSubsystem;
 
 public class RunSpindexer extends Command {
   private Indexer indexerSubs; 

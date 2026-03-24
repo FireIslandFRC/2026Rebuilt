@@ -39,6 +39,7 @@ public final class Autos {
 
         return routine;
     }
+    
     public AutoRoutine moveFoward() {
         AutoRoutine routine = autoFactory.newRoutine("moveFoward");
 
@@ -46,8 +47,7 @@ public final class Autos {
 
         routine.active().onTrue(
                 Commands.sequence(drive.resetOdometry(),
-                        drive.cmd(
-                        ).withTimeout(kMaxTrajectoryTimeoutSeconds)));
+                                  drive.cmd().withTimeout(kMaxTrajectoryTimeoutSeconds)));
 
         return routine;
     }

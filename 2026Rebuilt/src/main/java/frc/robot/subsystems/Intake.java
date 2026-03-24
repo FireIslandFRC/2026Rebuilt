@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -36,7 +35,7 @@ public class Intake extends SubsystemBase{
 
         intakeMotorLeftController.setSetpoint(distance, ControlType.kPosition);
         intakeMotorRightController.setSetpoint(distance, ControlType.kPosition);
-        System.out.println(distance);
+        // System.out.println(distance);
 
     }
 

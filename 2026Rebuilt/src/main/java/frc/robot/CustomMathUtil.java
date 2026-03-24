@@ -24,32 +24,32 @@
 
 package frc.robot;
 
-import java.util.Optional;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.PoseConstants;;
 
 public class CustomMathUtil {
 
-    private Pose2d targetPose;
+    private static Pose2d targetPose;
     private Rotation2d currentRotation;
 
     public CustomMathUtil() {
     }
 
-    public double distanceToTarget(Pose2d robotPose) {
-        return robotPose.getTranslation().getDistance(targetPose.getTranslation());
+    public static double distanceToTarget(Pose2d robotPose) {
+        return robotPose.getTranslation().getDistance(PoseConstants.TargetHubPose.getTranslation());
+    }
+
+    public static double distanceToWall(Pose2d robotPose) {
+        return Math.abs(PoseConstants.AllianceWall.getX() - robotPose.getX());
     }
 
     public Rotation2d angleToTarget(Pose2d robotPose) {
         double xDist = targetPose.getX() - robotPose.getX();
         double yDist = targetPose.getY() - robotPose.getY();
-        System.out.println(Math.atan2(yDist, xDist));
+        // System.out.println(Math.atan2(yDist, xDist));
         return new Rotation2d(Math.atan2(yDist, xDist));
     }
 
@@ -57,18 +57,20 @@ public class CustomMathUtil {
         return(value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
 
-    public double turretAngleToTarget(Pose2d robotPose) {
-        double xDist = PoseConstants.TargetHubPose.getX() - robotPose.getX(); // Assuming target is at (8, 8)
-        double yDist = PoseConstants.TargetHubPose.getY() - robotPose.getY();
+    public static double turretAngleToTarget(Pose2d robotPose, Pose2d wantedPose) {
+        // double xDist = PoseConstants.TargetHubPose.getX() - robotPose.getX(); // Assuming target is at (8, 8)
+        // double yDist = PoseConstants.TargetHubPose.getY() - robotPose.getY();
+        double xDist = wantedPose.getX() - robotPose.getX(); // Assuming target is at (8, 8)
+        double yDist = wantedPose.getY() - robotPose.getY();
         
         double targetAngleRad = Math.atan2(yDist, xDist);
         double targetAngleDeg = Math.toDegrees(targetAngleRad);
         double angleDifference;
         double currentRotation = robotPose.getRotation().getDegrees();
         if (Constants.alliance.get() == Alliance.Red){
-            angleDifference = targetAngleDeg - currentRotation;
+            angleDifference = targetAngleDeg - currentRotation - 180;
         }else{
-            angleDifference = targetAngleDeg + currentRotation - 180;
+            angleDifference = targetAngleDeg + currentRotation;
         }
         
         if (angleDifference >= 180){
@@ -76,7 +78,8 @@ public class CustomMathUtil {
         }else if(angleDifference <= -180){
             angleDifference = angleDifference + 360;
         }
-        System.out.println(angleDifference);
+
+        // System.out.println(angleDifference);
         return angleDifference;
     }
 }

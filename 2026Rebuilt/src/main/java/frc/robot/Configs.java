@@ -1,9 +1,12 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.PoundInch;
+
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SwerveConstants;
 
 public final class Configs {
@@ -49,10 +52,10 @@ public final class Configs {
 
 
                         intakeConfigL.closedLoop
-                                        .pid(0.6, 0, 0);
+                                        .pid(0.4, 0, 0);
 
                         intakeConfigR.closedLoop
-                                        .pid(0.6, 0, 0);
+                                        .pid(0.4, 0, 0);
 
 
                         intakeConfigL.encoder
@@ -74,6 +77,7 @@ public final class Configs {
 
                 public static final SparkFlexConfig indexerConfigL = new SparkFlexConfig();
                 public static final SparkFlexConfig indexerConfigR = new SparkFlexConfig();
+                public static final SparkFlexConfig indexerConfigM = new SparkFlexConfig();
                 public static final SparkFlexConfig spindexerConfig = new SparkFlexConfig();
 
                 static {
@@ -86,7 +90,12 @@ public final class Configs {
                         indexerConfigR 
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(40)
-                                        .inverted(true);
+                                        .inverted(false);
+
+                        indexerConfigM 
+                                        .idleMode(IdleMode.kBrake)
+                                        .smartCurrentLimit(40)
+                                        .inverted(false);
 
                         spindexerConfig
                                         .idleMode(IdleMode.kBrake)
@@ -100,6 +109,7 @@ public final class Configs {
 
                 public static final SparkFlexConfig flywheelConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig rotationConfig = new SparkFlexConfig();
+                public static final SparkMaxConfig pitchConfig = new SparkMaxConfig();
 
                 static {
 
@@ -107,13 +117,25 @@ public final class Configs {
                                         .idleMode(IdleMode.kCoast)
                                         .smartCurrentLimit(40)
                                         .inverted(false);
+                        flywheelConfig.closedLoop
+                                        .pid(.1, 0, 0);
 
                         rotationConfig 
                                         .idleMode(IdleMode.kBrake)
                                         .smartCurrentLimit(40)
                                         .inverted(true);
                         rotationConfig.encoder
-                                        .positionConversionFactor(81*3);
+                                        .positionConversionFactor(2.66);
+                        rotationConfig.closedLoop
+                                        .pid(.2, 0, 0);
+
+                        pitchConfig 
+                                        .idleMode(IdleMode.kBrake)
+                                        .smartCurrentLimit(40)
+                                        .inverted(true);
+                        pitchConfig.closedLoop 
+                                        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                                        .pid(17, 0.0, 5);
                                         
                 }
         }

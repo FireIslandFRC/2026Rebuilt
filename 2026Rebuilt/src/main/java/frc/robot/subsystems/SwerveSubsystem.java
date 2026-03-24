@@ -1,45 +1,31 @@
 package frc.robot.subsystems;
 
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import choreo.trajectory.SwerveSample;
 
-import static frc.robot.Constants.Vision.*;
-
-import java.util.Optional;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Robot;
 
 public class SwerveSubsystem extends SubsystemBase {
   /* * * INITIALIZATION * * */
@@ -289,7 +275,7 @@ public class SwerveSubsystem extends SubsystemBase {
     states[3] = new SwerveModuleState(0, new Rotation2d(Math.toRadians(-45)));
 
     for (SwerveModule swerveMod : swerveModules) {
-      System.out.println(swerveMod.moduleID);
+      // System.out.println(swerveMod.moduleID);
       swerveMod.setAngle(states[swerveMod.moduleID]);
     }
 
@@ -332,8 +318,7 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveMod.print();
     }
 
-    SmartDashboard.putNumber("Pigeon", pigeon.getYaw().getValueAsDouble());
-    
+    SmartDashboard.putNumber("Pigeon", MathUtil.inputModulus(pigeon.getRotation2d().getDegrees(), -180.0, 180.0));    
     m_field.setRobotPose(getPose());
     //SmartDashboard.putData(m_poseEstimator.getEstimatedPosition().);
   } 

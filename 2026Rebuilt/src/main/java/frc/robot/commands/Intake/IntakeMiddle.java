@@ -1,17 +1,10 @@
 package frc.robot.commands.Intake;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotStates;
 import frc.robot.RobotStates.IntakeState;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.SwerveSubsystem;
 
 public class IntakeMiddle extends Command {
   private Intake intakeSubs; 
@@ -25,6 +18,8 @@ public class IntakeMiddle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+            intakeSubs.setIntakeIn(.2);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
